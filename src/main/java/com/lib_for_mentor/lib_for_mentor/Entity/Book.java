@@ -93,4 +93,5 @@ public class Book {
     public int hashCode() {
         return Objects.hash(id, title, publishedYear, pages, description);
     }
+
 }
