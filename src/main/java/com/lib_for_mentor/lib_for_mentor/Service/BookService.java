@@ -1,4 +1,4 @@
-package Service;
+package com.lib_for_mentor.lib_for_mentor.Service;
 
 import com.lib_for_mentor.lib_for_mentor.Entity.Book;
 import com.lib_for_mentor.lib_for_mentor.Repository.BookRepository;
@@ -14,13 +14,21 @@ public class BookService {
 
     private final BookRepository bookRepository;
 
+    @Autowired
     public BookService(BookRepository bookCrudRepository) {
         this.bookRepository = bookCrudRepository;
     }
 
+    private final Book test = new Book(
+            "123",
+            12,
+            2003,
+            "Heellloo"
+    );
+
     @Transactional
     public void addBook(Book book) {
-        bookRepository.save(book);
+        bookRepository.save(this.test);
     }
 
     @Transactional
@@ -48,7 +56,7 @@ public class BookService {
 
     @Transactional(readOnly = true)
     public List<Book> findAllByTitle(String title) {
-        List<Book> Books = bookRepository.findAllByTitle(title);
+        List<Book> Books = bookRepository.findAllByTitle(title);// Запрос с помощью названия
 
         if (Books.isEmpty()) {
             throw new RuntimeException("Book with title [" + title + "] not found");
