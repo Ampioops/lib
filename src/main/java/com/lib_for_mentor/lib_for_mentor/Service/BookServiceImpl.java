@@ -20,7 +20,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Transactional
-    public Book addBook(Book book) {
+    public Book createBook(Book book) {
         return bookRepository.save(book);
     }
 
