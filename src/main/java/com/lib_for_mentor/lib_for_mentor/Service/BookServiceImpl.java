@@ -20,12 +20,12 @@ public class BookServiceImpl implements BookService {
     }
 
     @Transactional
-    public Book createBook(Book book) {
+    public Book create(Book book) {
         return bookRepository.save(book);
     }
 
     @Transactional
-    public void updateBookInfo(int id, String description, int pages, int published_year, String title) {
+    public void updateInfo(int id, String description, int pages, int published_year, String title) {
         Book book = bookRepository.findById(id).orElseThrow(() -> new RuntimeException("Book with id = [%s] not found".formatted(id)));
         book.setDescription(description);
         book.setPages(pages);
