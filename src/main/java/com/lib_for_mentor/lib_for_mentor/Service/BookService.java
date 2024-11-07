@@ -1,14 +1,27 @@
 package com.lib_for_mentor.lib_for_mentor.Service;
 
-import com.lib_for_mentor.lib_for_mentor.entities.Book;
+import com.lib_for_mentor.lib_for_mentor.models.CreateBookRequest;
 import com.lib_for_mentor.lib_for_mentor.models.BookResponce;
+import jakarta.validation.constraints.NotNull;
+
 
 import java.util.List;
 
+
 public interface BookService {
-    Book create(Book book);
-    void updateInfo(int id, String description, int pages, int published_year, String title);
-    Book deleteById(int id);
+
+    @NotNull
+    BookResponce create(@NotNull CreateBookRequest request);
+
+    @NotNull
+    BookResponce updateInfo(@NotNull int id, @NotNull CreateBookRequest request);
+
+    @NotNull
+    void deleteById(@NotNull int id);
+
+    @NotNull
     List<BookResponce> getAllBooks();
-    List<Book> findAllByTitle(String title);
+
+    @NotNull
+    List<BookResponce> findAllByTitle(@NotNull String title);
 }
