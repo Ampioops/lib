@@ -1,16 +1,20 @@
-package com.lib_for_mentor.lib_for_mentor.Service;
+package com.lib_for_mentor.lib_for_mentor.service;
 
-import com.lib_for_mentor.lib_for_mentor.entities.Book;
-import com.lib_for_mentor.lib_for_mentor.models.BookResponce;
-import com.lib_for_mentor.lib_for_mentor.models.CreateBookRequest;
-import com.lib_for_mentor.lib_for_mentor.repositories.BookRepository;
+import com.lib_for_mentor.lib_for_mentor.DTO.BookParamsDTO;
+import com.lib_for_mentor.lib_for_mentor.entity.Book;
+import com.lib_for_mentor.lib_for_mentor.model.BookResponse;
+import com.lib_for_mentor.lib_for_mentor.model.CreateBookRequest;
+import com.lib_for_mentor.lib_for_mentor.repository.BookRepository;
+import com.lib_for_mentor.lib_for_mentor.specification.BookSpecification;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,17 +22,19 @@ import java.util.stream.Collectors;
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
+    private final BookSpecification bookSpecification;
+
 
     @NotNull
     @Transactional
-    public BookResponce create(@NotNull CreateBookRequest request) {
+    public BookResponse create(@NotNull CreateBookRequest request) {
         Book book = buildBoookRequest(request);
         return buildBoookResponce(bookRepository.save(book));
     }
 
     @NotNull
     @Transactional
-    public BookResponce updateInfo(@NotNull int id, @NotNull CreateBookRequest request) {
+    public BookResponse updateInfo(@NotNull Integer id, @NotNull CreateBookRequest request) {
         Book book = bookRepository.findById(id).orElseThrow(() -> new RuntimeException("Book with id = [%s] not found".formatted(id)));
         book.setDescription(request.getDescription());
         book.setPages(request.getPages());
@@ -39,7 +45,7 @@ public class BookServiceImpl implements BookService {
 
     @NotNull
     @Transactional
-    public void deleteById(@NotNull int id) {
+    public void deleteById(@NotNull Integer id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Book with id = [%s] not found".formatted(id)));
         bookRepository.delete(book);
@@ -47,31 +53,30 @@ public class BookServiceImpl implements BookService {
 
     @NotNull
     @Transactional(readOnly = true)
-    public List<BookResponce> getAllBooks() {
-        return bookRepository.findAll()
-                .stream()
-                .map(this::buildBoookResponce)
-                .collect(Collectors.toList());
+    public List<BookResponse> getAllBooks(BookParamsDTO params) {
+        if (params == null) {                                       //Нужно ли допилить так, чтобы не было этого if?????
+            return bookRepository.findAll()
+                    .stream()
+                    .map(this::buildBoookResponce)
+                    .collect(Collectors.toList());
+        }else {
+            return bookRepository.findAll(bookSpecification.build(params))
+                    .stream()
+                    .map(this::buildBoookResponce)
+                    .collect(Collectors.toList());
+        }
     }
 
     @NotNull
     @Transactional(readOnly = true)
-    public List<BookResponce> findAllByTitle(@NotNull String title) {
-        List<Book> books = bookRepository.findByTitleContainingIgnoreCase(title); // Запрос с помощью названия
-
-        if (books.isEmpty()) {
-            throw new RuntimeException("Book with title [" + title + "] not found");
-        }
-
-        return books
-                .stream()
-                .map(this::buildBoookResponce)
-                .collect(Collectors.toList());
+    public Optional<BookResponse> findById(@NotNull Integer id) {
+        return bookRepository.findById(id)
+                .map(this::buildBoookResponce);
     }
 
     @NotNull
-    public BookResponce buildBoookResponce(@NotNull Book book) {
-        return new BookResponce()
+    public BookResponse buildBoookResponce(@NotNull Book book) {
+        return new BookResponse()
                 .setId(book.getId())
                 .setDescription(book.getDescription())
                 .setPages(book.getPages())
@@ -86,7 +91,8 @@ public class BookServiceImpl implements BookService {
                 .setId(request.getId())
                 .setDescription(request.getDescription())
                 .setPages(request.getPages())
-                .setPublishedYear(request.getPublishedYear());
+                .setPublishedYear(request.getPublishedYear())
+                .setTitle(request.getTitle());
 
     }
 }

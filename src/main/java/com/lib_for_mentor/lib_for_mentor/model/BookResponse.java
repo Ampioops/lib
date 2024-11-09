@@ -1,11 +1,11 @@
-package com.lib_for_mentor.lib_for_mentor.models;
+package com.lib_for_mentor.lib_for_mentor.model;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-@Data
+@Data //get, set, toString, equals, hashCode
 @Accessors(chain = true)
-public class CreateBookRequest {
+public class BookResponse {
         private Integer id;
         private String title;
         private int publishedYear;
