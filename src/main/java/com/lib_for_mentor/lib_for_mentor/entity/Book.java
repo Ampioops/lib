@@ -1,4 +1,4 @@
-package com.lib_for_mentor.lib_for_mentor.entities;
+package com.lib_for_mentor.lib_for_mentor.entity;
 
 
 import jakarta.persistence.*;
@@ -22,10 +22,10 @@ public class Book {
     private String title;
 
     @Column(name = "published_year")
-    private int publishedYear;
+    private Integer publishedYear;
 
     @Column
-    private int pages;
+    private Integer pages;
 
     @Column
     private String description;
@@ -46,7 +46,7 @@ public class Book {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Book book = (Book) o;
-        return id == book.id && publishedYear == book.publishedYear && pages == book.pages && Objects.equals(title, book.title) && Objects.equals(description, book.description);
+        return Objects.equals(id, book.id) && Objects.equals(publishedYear, book.publishedYear) && Objects.equals(pages, book.pages) && Objects.equals(title, book.title) && Objects.equals(description, book.description);
     }
 
     @Override
