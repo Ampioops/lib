@@ -43,7 +43,7 @@ public class BookController {
     }
 
     @GetMapping(value = "/{bookId}", produces = APPLICATION_JSON_VALUE)
-    public Optional<BookResponse> getBookById(@PathVariable Integer bookId) {
+    public BookResponse getBookById(@PathVariable Integer bookId) {
         return bookService.findById(bookId);
     }
 

@@ -1,13 +1,10 @@
 package com.lib_for_mentor.lib_for_mentor.entity;
 
 
-import com.lib_for_mentor.lib_for_mentor.model.CreateBookRequest;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import lombok.experimental.Accessors;
-
 import java.util.Objects;
+
 @Data
 @Builder
 @Entity

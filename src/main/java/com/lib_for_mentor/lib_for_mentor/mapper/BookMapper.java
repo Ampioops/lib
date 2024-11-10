@@ -14,7 +14,5 @@ public interface BookMapper {
 
     BookResponse bookToBookResponse(Book book);
     List<BookResponse> booksToBookResponses(List<Book> books);
-    Optional<BookResponse> optionalBookToBookResponse(Optional<Book> book);
-
     Book bookResponseToBook(BookResponse bookResponse);
 }

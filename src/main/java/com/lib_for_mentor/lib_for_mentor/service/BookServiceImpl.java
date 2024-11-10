@@ -12,11 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
@@ -65,27 +61,20 @@ public class BookServiceImpl implements BookService {
     @Transactional(readOnly = true)
     public List<BookResponse> getAllBooks(BookParamsDTO params) {
         if (params == null) {                                       //Нужно ли допилить так, чтобы не было if?????
-//            return bookRepository.findAll()
-//                    .stream()
-//                    .map(this::buildBoookResponse)
-//                    .collect(Collectors.toList());
             return BookMapper.INSTANCE.booksToBookResponses(bookRepository.findAll());
         }else {
             return BookMapper.INSTANCE.booksToBookResponses(bookRepository.findAll(bookSpecification.build(params)));
-//                    bookRepository.findAll(bookSpecification.build(params))
-//                    .stream()
-//                    .map(this::buildBoookResponse)
-//                    .collect(Collectors.toList());
         }
     }
 
     @NotNull
     @Transactional(readOnly = true)
-    public Optional<BookResponse> findById(@NotNull Integer id) {
-        if (bookRepository.findById(id).isPresent()) {
-            return BookMapper.INSTANCE.optionalBookToBookResponse(bookRepository.findById(id)); //Не понимаю как тут будет вести себя Optional с Mapstruct
+    public BookResponse findById(@NotNull Integer id) {
+        Book book = bookRepository.findById(id).orElse(null);
+        if (book == null) {
+            return null;
         }else{
-            return Optional.empty();
+            return BookMapper.INSTANCE.bookToBookResponse(book);
         }
     }
 
