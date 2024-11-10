@@ -28,6 +28,7 @@
 	</scm>
 	<properties>
 		<java.version>23</java.version>
+		<org.mapstruct.version>1.6.3</org.mapstruct.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -60,6 +61,11 @@
 			<groupId>jakarta.validation</groupId>
 			<artifactId>jakarta.validation-api</artifactId>
 			<version>3.0.2</version> <!-- или другая последняя версия -->
+		</dependency>
+		<dependency>
+		<groupId>org.mapstruct</groupId>
+		<artifactId>mapstruct</artifactId>
+		<version>${org.mapstruct.version}</version>
 		</dependency>
 
 		<!-- Apache Commons Lang3 -->

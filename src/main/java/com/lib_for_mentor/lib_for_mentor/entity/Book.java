@@ -1,18 +1,19 @@
 package com.lib_for_mentor.lib_for_mentor.entity;
 
 
+import com.lib_for_mentor.lib_for_mentor.model.CreateBookRequest;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.util.Objects;
-
-@Getter
-@Setter
-@Accessors(chain = true)
+@Data
+@Builder
 @Entity
 @Table(name = "books")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,5 +54,4 @@ public class Book {
     public int hashCode() {
         return Objects.hash(id, title, publishedYear, pages, description);
     }
-
 }

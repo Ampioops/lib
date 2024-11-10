@@ -1,5 +1,6 @@
 package com.lib_for_mentor.lib_for_mentor.model;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
