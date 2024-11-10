@@ -7,8 +7,6 @@ import jakarta.validation.constraints.NotNull;
 
 
 import java.util.List;
-import java.util.Optional;
-
 
 public interface BookService {
 
@@ -25,5 +23,5 @@ public interface BookService {
     List<BookResponse> getAllBooks(BookParamsDTO params);
 
     @NotNull
-    Optional<BookResponse> findById(@NotNull Integer id);
+    BookResponse findById(@NotNull Integer id);
 }
