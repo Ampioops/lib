@@ -13,6 +13,4 @@ public interface BookMapper {
     BookMapper INSTANCE = Mappers.getMapper(BookMapper.class);
 
     BookResponse bookToBookResponse(Book book);
-    List<BookResponse> booksToBookResponses(List<Book> books);
-    Book bookResponseToBook(BookResponse bookResponse);
-}
+    List<BookResponse> booksToBookResponses(List<Book> books);}
