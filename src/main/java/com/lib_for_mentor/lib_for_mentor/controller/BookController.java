@@ -39,7 +39,7 @@ public class BookController {
     @GetMapping(value = "/", produces = APPLICATION_JSON_VALUE)
     public Page<BookResponse> getBooks(
             @RequestBody BookParamsDTO params,
-            @RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
+            @RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset, //Пагинация
             @RequestParam(value = "limit", defaultValue = "10") @Min(100) Integer limit
     ) {
         return bookService.getAllBooks(params, offset, limit);
