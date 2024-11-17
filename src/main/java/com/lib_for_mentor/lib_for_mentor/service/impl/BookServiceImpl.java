@@ -1,18 +1,20 @@
-package com.lib_for_mentor.lib_for_mentor.service;
+package com.lib_for_mentor.lib_for_mentor.service.impl;
 
-import com.lib_for_mentor.lib_for_mentor.DTO.BookParamsDTO;
+import com.lib_for_mentor.lib_for_mentor.model.dto.BookParamsDTO;
 import com.lib_for_mentor.lib_for_mentor.entity.Book;
 import com.lib_for_mentor.lib_for_mentor.mapper.BookMapper;
 import com.lib_for_mentor.lib_for_mentor.model.BookResponse;
 import com.lib_for_mentor.lib_for_mentor.model.CreateBookRequest;
 import com.lib_for_mentor.lib_for_mentor.repository.BookRepository;
+import com.lib_for_mentor.lib_for_mentor.service.BookService;
 import com.lib_for_mentor.lib_for_mentor.specification.BookSpecification;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
@@ -20,6 +22,7 @@ public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
     private final BookSpecification bookSpecification;
+    private final BookMapper bookMapper;
 
 
     @NotNull
@@ -30,10 +33,13 @@ public class BookServiceImpl implements BookService {
                 .publishedYear(request.getPublishedYear())
                 .description(request.getDescription())
                 .pages(request.getPages())
+                .author(request.getAuthorId())
+                .genre(request.getGenre())
+                .publisher(request.getPublisher())
                 .build();
         bookRepository.save(book);
 
-        return BookMapper.INSTANCE.bookToBookResponse(book);
+        return bookMapper.bookToBookResponse(book);
     }
 
     @NotNull
@@ -44,9 +50,12 @@ public class BookServiceImpl implements BookService {
         book.setPages(request.getPages());
         book.setPublishedYear(request.getPublishedYear());
         book.setTitle(request.getTitle());
+        book.setGenre(request.getGenre());
+        book.setAuthor(request.getAuthor());
+        book.setPublisher(request.getPublisher());
         bookRepository.save(book);
 
-        return BookMapper.INSTANCE.bookToBookResponse(book);
+        return bookMapper.bookToBookResponse(book);
     }
 
     @NotNull
@@ -59,23 +68,17 @@ public class BookServiceImpl implements BookService {
 
     @NotNull
     @Transactional(readOnly = true)
-    public List<BookResponse> getAllBooks(BookParamsDTO params) {
-        if (params == null) {                                       //Нужно ли допилить так, чтобы не было if?????
-            return BookMapper.INSTANCE.booksToBookResponses(bookRepository.findAll());
-        }else {
-            return BookMapper.INSTANCE.booksToBookResponses(bookRepository.findAll(bookSpecification.build(params)));
-        }
+    public Page<BookResponse> getAllBooks(BookParamsDTO params, Integer offset, Integer limit) {
+        PageRequest pageRequest = PageRequest.of(offset, limit);
+        Page <Book> books = bookRepository.findAll(bookSpecification.build(params), pageRequest);
+        return bookMapper.booksToBookResponsesPage(books);
     }
 
     @NotNull
     @Transactional(readOnly = true)
     public BookResponse findById(@NotNull Integer id) {
         Book book = bookRepository.findById(id).orElse(null);
-        if (book == null) {
-            return null;
-        }else{
-            return BookMapper.INSTANCE.bookToBookResponse(book);
-        }
+        return bookMapper.bookToBookResponse(book);
     }
 
 

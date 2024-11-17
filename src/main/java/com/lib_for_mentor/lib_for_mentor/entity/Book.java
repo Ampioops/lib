@@ -2,6 +2,7 @@ package com.lib_for_mentor.lib_for_mentor.entity;
 
 
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.*;
 import java.util.Objects;
 
@@ -28,6 +29,18 @@ public class Book {
     @Column
     private String description;
 
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    private Author author;
+
+    @ManyToOne
+    @JoinColumn(name = "genre_id", nullable = false)
+    private Genre genre;
+
+    @ManyToOne
+    @JoinColumn(name = "publisher_id", nullable = false)
+    private Publisher publisher;
+
     @Override
     public String toString() {
         return "Book{" +
@@ -51,4 +64,5 @@ public class Book {
     public int hashCode() {
         return Objects.hash(id, title, publishedYear, pages, description);
     }
+
 }

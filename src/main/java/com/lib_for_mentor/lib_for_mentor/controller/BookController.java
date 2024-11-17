@@ -1,16 +1,15 @@
 package com.lib_for_mentor.lib_for_mentor.controller;
 
 
-import com.lib_for_mentor.lib_for_mentor.DTO.BookParamsDTO;
-import com.lib_for_mentor.lib_for_mentor.service.BookServiceImpl;
+import com.lib_for_mentor.lib_for_mentor.model.dto.BookParamsDTO;
+import com.lib_for_mentor.lib_for_mentor.service.impl.BookServiceImpl;
 import com.lib_for_mentor.lib_for_mentor.model.BookResponse;
 import com.lib_for_mentor.lib_for_mentor.model.CreateBookRequest;
-import com.lib_for_mentor.lib_for_mentor.specification.BookSpecification;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -38,12 +37,16 @@ public class BookController {
     }
 
     @GetMapping(value = "/", produces = APPLICATION_JSON_VALUE)
-    public List<BookResponse> getBooks(@RequestBody(required = false) BookParamsDTO params) {
-        return bookService.getAllBooks(params);
+    public Page<BookResponse> getBooks(
+            @RequestBody BookParamsDTO params,
+            @RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
+            @RequestParam(value = "limit", defaultValue = "10") @Min(100) Integer limit
+    ) {
+        return bookService.getAllBooks(params, offset, limit);
     }
 
     @GetMapping(value = "/{bookId}", produces = APPLICATION_JSON_VALUE)
-    public BookResponse getBookById(@PathVariable Integer bookId) {
+    public BookResponse getBookById(@PathVariable @NotNull Integer bookId) {
         return bookService.findById(bookId);
     }
 

@@ -1,6 +1,6 @@
 package com.lib_for_mentor.lib_for_mentor.specification;
 
-import com.lib_for_mentor.lib_for_mentor.DTO.BookParamsDTO;
+import com.lib_for_mentor.lib_for_mentor.model.dto.BookParamsDTO;
 import com.lib_for_mentor.lib_for_mentor.entity.Book;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;

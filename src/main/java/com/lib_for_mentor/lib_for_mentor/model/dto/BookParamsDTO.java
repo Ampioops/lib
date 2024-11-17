@@ -1,4 +1,4 @@
-package com.lib_for_mentor.lib_for_mentor.DTO;
+package com.lib_for_mentor.lib_for_mentor.model.dto;
 
 import lombok.Getter;
 import lombok.Setter;
