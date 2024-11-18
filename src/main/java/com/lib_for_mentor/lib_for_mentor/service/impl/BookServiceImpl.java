@@ -4,7 +4,7 @@ import com.lib_for_mentor.lib_for_mentor.model.dto.BookParamsDTO;
 import com.lib_for_mentor.lib_for_mentor.entity.Book;
 import com.lib_for_mentor.lib_for_mentor.mapper.BookMapper;
 import com.lib_for_mentor.lib_for_mentor.model.BookResponse;
-import com.lib_for_mentor.lib_for_mentor.model.CreateBookRequest;
+import com.lib_for_mentor.lib_for_mentor.model.BookRequest;
 import com.lib_for_mentor.lib_for_mentor.repository.BookRepository;
 import com.lib_for_mentor.lib_for_mentor.service.BookService;
 import com.lib_for_mentor.lib_for_mentor.specification.BookSpecification;
@@ -27,7 +27,7 @@ public class BookServiceImpl implements BookService {
 
     @NotNull
     @Transactional
-    public BookResponse create(@NotNull CreateBookRequest request) {
+    public BookResponse create(@NotNull BookRequest request) {
         Book book = Book.builder()
                 .title(request.getTitle())
                 .publishedYear(request.getPublishedYear())
@@ -44,11 +44,11 @@ public class BookServiceImpl implements BookService {
 
     @NotNull
     @Transactional
-    public BookResponse updateInfo(@NotNull Integer id, @NotNull CreateBookRequest request) {
+    public BookResponse updateInfo(@NotNull Integer id, @NotNull BookRequest request) {
         Book book = bookRepository.findById(id).orElseThrow(() -> new RuntimeException("Book with id = [%s] not found".formatted(id)));
         book.setDescription(request.getDescription());
         book.setPages(request.getPages());
-        book.setPublishedYear(request.getPublishedYear());
+        book.setPublishedYear(request.getPublishedYear());  //Нужно ли создать класс, где это само реализуется?
         book.setTitle(request.getTitle());
         book.setGenre(request.getGenre());
         book.setAuthor(request.getAuthor());

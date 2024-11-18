@@ -41,28 +41,4 @@ public class Book {
     @JoinColumn(name = "publisher_id", nullable = false)
     private Publisher publisher;
 
-    @Override
-    public String toString() {
-        return "Book{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", published_year=" + publishedYear +
-                ", pages=" + pages +
-                ", description='" + description + '\'' +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Book book = (Book) o;
-        return Objects.equals(id, book.id) && Objects.equals(publishedYear, book.publishedYear) && Objects.equals(pages, book.pages) && Objects.equals(title, book.title) && Objects.equals(description, book.description);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, title, publishedYear, pages, description);
-    }
-
 }

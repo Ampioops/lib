@@ -11,4 +11,5 @@ public class BookResponse {
         private int publishedYear;
         private int pages;
         private String description;
+//        private AuthorResponse author; Что делать в ответе с автором?
 }

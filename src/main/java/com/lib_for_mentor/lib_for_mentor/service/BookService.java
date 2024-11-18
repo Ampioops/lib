@@ -1,21 +1,18 @@
 package com.lib_for_mentor.lib_for_mentor.service;
 
 import com.lib_for_mentor.lib_for_mentor.model.dto.BookParamsDTO;
-import com.lib_for_mentor.lib_for_mentor.model.CreateBookRequest;
+import com.lib_for_mentor.lib_for_mentor.model.BookRequest;
 import com.lib_for_mentor.lib_for_mentor.model.BookResponse;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 
-
-import java.util.List;
-
 public interface BookService {
 
     @NotNull
-    BookResponse create(@NotNull CreateBookRequest request);
+    BookResponse create(@NotNull BookRequest request);
 
     @NotNull
-    BookResponse updateInfo(@NotNull Integer id, @NotNull CreateBookRequest request);
+    BookResponse updateInfo(@NotNull Integer id, @NotNull BookRequest request);
 
     @NotNull
     void deleteById(@NotNull Integer id);
