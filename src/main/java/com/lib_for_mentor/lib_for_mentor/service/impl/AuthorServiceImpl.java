@@ -11,6 +11,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,11 +53,15 @@ public class AuthorServiceImpl implements AuthorService {
 
     @NotNull
     public Page<AuthorResponse> getAllAuthors(AuthorParamsDTO params, Integer offset, Integer limit) {
-        return null;
+        PageRequest pageRequest = PageRequest.of(offset, limit);
+        Page <Author> authors = authorRepository.findAll(pageRequest); //+Specification
+        return authorMapper.authorsToAuthorResponsesPage(authors);
     }
 
     @NotNull
     public AuthorResponse findById(Integer id) {
-        return null;
+        Author author = authorRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Author not found"));
+        return authorMapper.authorToAuthorResponse(author);
     }
 }

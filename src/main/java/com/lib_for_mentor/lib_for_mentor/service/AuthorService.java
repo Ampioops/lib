@@ -1,5 +1,6 @@
 package com.lib_for_mentor.lib_for_mentor.service;
 
+import com.lib_for_mentor.lib_for_mentor.entity.Book;
 import com.lib_for_mentor.lib_for_mentor.model.AuthorRequest;
 import com.lib_for_mentor.lib_for_mentor.model.AuthorResponse;
 import com.lib_for_mentor.lib_for_mentor.model.dto.AuthorParamsDTO;
@@ -21,4 +22,7 @@ public interface AuthorService {
 
     @NotNull
     AuthorResponse findById(@NotNull Integer id);
+
+    @NotNull
+    AuthorResponse addBook (@NotNull Integer id, @NotNull Book book);
 }

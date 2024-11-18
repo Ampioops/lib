@@ -5,6 +5,7 @@ import com.lib_for_mentor.lib_for_mentor.entity.Book;
 import com.lib_for_mentor.lib_for_mentor.mapper.BookMapper;
 import com.lib_for_mentor.lib_for_mentor.model.BookResponse;
 import com.lib_for_mentor.lib_for_mentor.model.BookRequest;
+import com.lib_for_mentor.lib_for_mentor.repository.AuthorRepository;
 import com.lib_for_mentor.lib_for_mentor.repository.BookRepository;
 import com.lib_for_mentor.lib_for_mentor.service.BookService;
 import com.lib_for_mentor.lib_for_mentor.specification.BookSpecification;
@@ -23,7 +24,8 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final BookSpecification bookSpecification;
     private final BookMapper bookMapper;
-
+    private final AuthorRepository authorRepository;
+    //AuthorRepo
 
     @NotNull
     @Transactional
@@ -33,9 +35,7 @@ public class BookServiceImpl implements BookService {
                 .publishedYear(request.getPublishedYear())
                 .description(request.getDescription())
                 .pages(request.getPages())
-                .author(request.getAuthorId())
-                .genre(request.getGenre())
-                .publisher(request.getPublisher())
+                .author(authorRepository.findById(request.getAuthorId()).orElseThrow(RuntimeException::new))
                 .build();
         bookRepository.save(book);
 
@@ -50,9 +50,7 @@ public class BookServiceImpl implements BookService {
         book.setPages(request.getPages());
         book.setPublishedYear(request.getPublishedYear());  //Нужно ли создать класс, где это само реализуется?
         book.setTitle(request.getTitle());
-        book.setGenre(request.getGenre());
-        book.setAuthor(request.getAuthor());
-        book.setPublisher(request.getPublisher());
+        book.setAuthor(authorRepository.findById(request.getAuthorId()).orElseThrow(RuntimeException::new));
         bookRepository.save(book);
 
         return bookMapper.bookToBookResponse(book);
