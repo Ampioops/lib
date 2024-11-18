@@ -24,5 +24,5 @@ public interface AuthorService {
     AuthorResponse findById(@NotNull Integer id);
 
     @NotNull
-    AuthorResponse addBook (@NotNull Integer id, @NotNull Book book);
+    AuthorResponse addBook (@NotNull Integer id, @NotNull Book book); //---Остановка тут
 }
