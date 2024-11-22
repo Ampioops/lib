@@ -3,6 +3,7 @@ package com.lib_for_mentor.lib_for_mentor.service.impl;
 import com.lib_for_mentor.lib_for_mentor.entity.Author;
 import com.lib_for_mentor.lib_for_mentor.entity.Book;
 import com.lib_for_mentor.lib_for_mentor.mapper.AuthorMapper;
+import com.lib_for_mentor.lib_for_mentor.mapper.BookMapper;
 import com.lib_for_mentor.lib_for_mentor.model.AuthorRequest;
 import com.lib_for_mentor.lib_for_mentor.model.AuthorResponse;
 import com.lib_for_mentor.lib_for_mentor.model.CreateAuthorRequest;
@@ -10,6 +11,7 @@ import com.lib_for_mentor.lib_for_mentor.model.dto.AuthorParamsDTO;
 import com.lib_for_mentor.lib_for_mentor.repository.AuthorRepository;
 import com.lib_for_mentor.lib_for_mentor.repository.BookRepository;
 import com.lib_for_mentor.lib_for_mentor.service.AuthorService;
+import com.lib_for_mentor.lib_for_mentor.service.BookService;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,10 @@ public class AuthorServiceImpl implements AuthorService {
     private final AuthorRepository authorRepository;
     private final AuthorMapper authorMapper;
     private final BookRepository bookRepository;
+    private final BookServiceImpl bookService; //????
+    private final BookServiceImpl bookServiceImpl;
+    private final BookMapper bookMapper;
+
 
     @NotNull
     @Transactional
@@ -71,19 +77,11 @@ public class AuthorServiceImpl implements AuthorService {
         return authorMapper.authorToCreateAuthorResponse(author);
     }
 
+    //не находит айди
     @NotNull
     @Transactional
     public AuthorResponse assignBook(@NotNull Integer authorId,@NotNull Integer bookId) {
-
-        Optional<Book> book1 = bookRepository.findById(4);
-        if (book1.isPresent()) {
-            System.out.println("Book found: " + book1.get());
-        } else {
-            System.out.println("Book not found!");
-        }
-
-        Book book = bookRepository.findById(bookId)
-                .orElseThrow(()-> new RuntimeException("Book not found"));
+        Book book = bookMapper.bookResponseToBook(bookServiceImpl.findById(bookId));
 
         Author author = authorRepository.findById(authorId)
                 .orElseThrow(() -> new RuntimeException("Author not found"));

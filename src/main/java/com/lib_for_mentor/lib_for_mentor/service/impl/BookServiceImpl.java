@@ -75,7 +75,7 @@ public class BookServiceImpl implements BookService {
     @NotNull
     @Transactional(readOnly = true)
     public BookResponse findById(@NotNull Integer id) {
-        Book book = bookRepository.findById(id).orElse(null);
+        Book book = bookRepository.findById(id).orElseThrow(() -> new RuntimeException("Book with id = [%s] not found".formatted(id)));
         return bookMapper.bookToBookResponse(book);
     }
 
