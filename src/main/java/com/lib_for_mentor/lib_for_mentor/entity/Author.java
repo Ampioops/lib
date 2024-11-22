@@ -4,6 +4,7 @@ package com.lib_for_mentor.lib_for_mentor.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -24,7 +25,7 @@ public class Author {
     private String lastName;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Book> books;
+    private List<Book> books = new ArrayList<>();
 
 }
 

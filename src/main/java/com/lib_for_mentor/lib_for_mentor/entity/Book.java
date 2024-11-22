@@ -17,16 +17,16 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column
+    @Column(name = "title")
     private String title;
 
     @Column(name = "published_year")
     private Integer publishedYear;
 
-    @Column
+    @Column(name = "pages")
     private Integer pages;
 
-    @Column
+    @Column(name = "description")
     private String description;
 
     @ManyToOne

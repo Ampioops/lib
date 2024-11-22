@@ -12,6 +12,4 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface BookMapper {
     BookResponse bookToBookResponse(Book book);
-    List<BookResponse> booksToBookResponses(List<Book> books);
-    Page<BookResponse> booksToBookResponsesPage(Page<Book> books);
 }

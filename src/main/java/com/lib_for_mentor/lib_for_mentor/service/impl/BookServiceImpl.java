@@ -35,7 +35,7 @@ public class BookServiceImpl implements BookService {
                 .publishedYear(request.getPublishedYear())
                 .description(request.getDescription())
                 .pages(request.getPages())
-                .author(authorRepository.findById(request.getAuthorId()).orElseThrow(RuntimeException::new))
+                .author(authorRepository.findById(request.getAuthorId()).orElseThrow(() -> new RuntimeException("Author not found")))
                 .build();
         bookRepository.save(book);
 
@@ -50,7 +50,7 @@ public class BookServiceImpl implements BookService {
         book.setPages(request.getPages());
         book.setPublishedYear(request.getPublishedYear());  //Нужно ли создать класс, где это само реализуется?
         book.setTitle(request.getTitle());
-        book.setAuthor(authorRepository.findById(request.getAuthorId()).orElseThrow(RuntimeException::new));
+        book.setAuthor(authorRepository.findById(request.getAuthorId()).orElseThrow(() -> new RuntimeException("Author not found")));
         bookRepository.save(book);
 
         return bookMapper.bookToBookResponse(book);
@@ -69,7 +69,7 @@ public class BookServiceImpl implements BookService {
     public Page<BookResponse> getAllBooks(BookParamsDTO params, Integer offset, Integer limit) {
         PageRequest pageRequest = PageRequest.of(offset, limit);
         Page <Book> books = bookRepository.findAll(bookSpecification.build(params), pageRequest);
-        return bookMapper.booksToBookResponsesPage(books);
+        return books.map(bookMapper::bookToBookResponse);
     }
 
     @NotNull
