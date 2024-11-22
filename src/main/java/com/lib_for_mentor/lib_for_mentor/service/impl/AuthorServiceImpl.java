@@ -4,12 +4,12 @@ import com.lib_for_mentor.lib_for_mentor.entity.Author;
 import com.lib_for_mentor.lib_for_mentor.entity.Book;
 import com.lib_for_mentor.lib_for_mentor.mapper.AuthorMapper;
 import com.lib_for_mentor.lib_for_mentor.mapper.BookMapper;
-import com.lib_for_mentor.lib_for_mentor.mapper.BookMapperImpl;
 import com.lib_for_mentor.lib_for_mentor.model.request.AuthorRequestDTO;
 import com.lib_for_mentor.lib_for_mentor.model.request.CreateAuthorRequestDTO;
 import com.lib_for_mentor.lib_for_mentor.model.param.AuthorParamsDTO;
 import com.lib_for_mentor.lib_for_mentor.model.response.AuthorResponseDTO;
 import com.lib_for_mentor.lib_for_mentor.repository.AuthorRepository;
+import com.lib_for_mentor.lib_for_mentor.repository.BookRepository;
 import com.lib_for_mentor.lib_for_mentor.service.AuthorService;
 import com.lib_for_mentor.lib_for_mentor.specification.AuthorSpecification;
 import jakarta.validation.constraints.NotNull;
@@ -31,6 +31,7 @@ public class AuthorServiceImpl implements AuthorService {
     private final BookServiceImpl bookServiceImpl;
     private final AuthorSpecification authorSpecification;
     private final BookMapper bookMapper;
+    private final BookRepository bookRepository;
 
     @NotNull
     @Transactional
@@ -85,8 +86,8 @@ public class AuthorServiceImpl implements AuthorService {
         Book book = bookMapper.bookResponseDTOToBook(authorRepository, bookServiceImpl.findById(bookId));
         Author author = authorRepository.findById(authorId)
                 .orElseThrow(() -> new RuntimeException("Author not found"));
-        author.addBook(book);
-        authorRepository.save(author);
+        book.setAuthor(author);
+        bookRepository.save(book);
         return authorMapper.toAuthorResponse(author);
     }
 
@@ -96,8 +97,8 @@ public class AuthorServiceImpl implements AuthorService {
         Book book = bookMapper.bookResponseDTOToBook(authorRepository, bookServiceImpl.findById(bookId));
         Author author = authorRepository.findById(authorId)
                 .orElseThrow(() -> new RuntimeException("Author not found"));
-        author.removeBook(book);
-        authorRepository.save(author);
+        book.setAuthor(null);
+        bookRepository.save(book);
         return authorMapper.toAuthorResponse(author);
     }
 }

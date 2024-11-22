@@ -35,6 +35,5 @@ public class Author {
         books.remove(book);
         book.setAuthor(null);
     }
-
 }
 

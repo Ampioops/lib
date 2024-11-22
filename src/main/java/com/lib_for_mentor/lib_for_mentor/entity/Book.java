@@ -31,12 +31,12 @@ public class Book {
     @JoinColumn(name = "author_id", nullable = false)
     private Author author;
 
-    @ManyToOne
-    @JoinColumn(name = "genre_id", nullable = true)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "genre_id", nullable = false)
     private Genre genre;
 
-    @ManyToOne
-    @JoinColumn(name = "publisher_id", nullable = true)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "publisher_id", nullable = false)
     private Publisher publisher;
 
 }
