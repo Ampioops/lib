@@ -67,7 +67,7 @@ public class AuthorServiceImpl implements AuthorService {
     public Page<AuthorResponse> getAuthors(AuthorParamsDTO params, Integer offset, Integer limit) {
         PageRequest pageRequest = PageRequest.of(offset, limit);
         Page <Author> authors = authorRepository.findAll(pageRequest); //+Specification
-        return authors.map(authorMapper::authorToAuthorResponse); //не понимаю как через маппер сделать
+        return authors.map(authorMapper::authorToAuthorResponse);
     }
 
     @NotNull
@@ -77,21 +77,19 @@ public class AuthorServiceImpl implements AuthorService {
         return authorMapper.authorToCreateAuthorResponse(author);
     }
 
-    //не находит айди
+    //StackOverFlowExc!!!!
+    // мб создать свой save(единственный Transactional) в этом сервисе и через него
+
     @NotNull
     @Transactional
     public AuthorResponse assignBook(@NotNull Integer authorId,@NotNull Integer bookId) {
-        Book book = bookMapper.bookResponseToBook(bookServiceImpl.findById(bookId));
-
+        Book book = bookServiceImpl.findById(bookId);
         Author author = authorRepository.findById(authorId)
                 .orElseThrow(() -> new RuntimeException("Author not found"));
-
         author.getBooks().add(book);
         authorRepository.save(author);
-
         book.setAuthor(author);
         bookRepository.save(book);
-
         return authorMapper.authorToAuthorResponse(author);
     }
 }

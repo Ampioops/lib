@@ -24,7 +24,7 @@ public class Author {
     @Column(name = "last_name")
     private String lastName;
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Book> books = new ArrayList<>();
 
 }

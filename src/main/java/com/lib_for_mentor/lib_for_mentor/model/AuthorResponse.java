@@ -12,5 +12,5 @@ public class AuthorResponse {
     private Integer id;
     private String firstName;
     private String lastName;
-    private List<Book> books;
+    private List<BookResponse> books;
 }

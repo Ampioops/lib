@@ -29,7 +29,7 @@ public class BookServiceImpl implements BookService {
 
     @NotNull
     @Transactional
-    public BookResponse create(@NotNull BookRequest request) {
+    public Book create(@NotNull BookRequest request) {
         Book book = Book.builder()
                 .title(request.getTitle())
                 .publishedYear(request.getPublishedYear())
@@ -39,12 +39,12 @@ public class BookServiceImpl implements BookService {
                 .build();
         bookRepository.save(book);
 
-        return bookMapper.bookToBookResponse(book);
+        return book;
     }
 
     @NotNull
     @Transactional
-    public BookResponse updateInfo(@NotNull Integer id, @NotNull BookRequest request) {
+    public Book updateInfo(@NotNull Integer id, @NotNull BookRequest request) {
         Book book = bookRepository.findById(id).orElseThrow(() -> new RuntimeException("Book with id = [%s] not found".formatted(id)));
         book.setDescription(request.getDescription());
         book.setPages(request.getPages());
@@ -53,7 +53,7 @@ public class BookServiceImpl implements BookService {
         book.setAuthor(authorRepository.findById(request.getAuthorId()).orElseThrow(() -> new RuntimeException("Author not found")));
         bookRepository.save(book);
 
-        return bookMapper.bookToBookResponse(book);
+        return book;
     }
 
     @NotNull
@@ -66,17 +66,17 @@ public class BookServiceImpl implements BookService {
 
     @NotNull
     @Transactional(readOnly = true)
-    public Page<BookResponse> getAllBooks(BookParamsDTO params, Integer offset, Integer limit) {
+    public Page<Book> getAllBooks(BookParamsDTO params, Integer offset, Integer limit) {
         PageRequest pageRequest = PageRequest.of(offset, limit);
         Page <Book> books = bookRepository.findAll(bookSpecification.build(params), pageRequest);
-        return books.map(bookMapper::bookToBookResponse);
+        return books;
     }
 
     @NotNull
     @Transactional(readOnly = true)
-    public BookResponse findById(@NotNull Integer id) {
+    public Book findById(@NotNull Integer id) {
         Book book = bookRepository.findById(id).orElseThrow(() -> new RuntimeException("Book with id = [%s] not found".formatted(id)));
-        return bookMapper.bookToBookResponse(book);
+        return book;
     }
 
 
