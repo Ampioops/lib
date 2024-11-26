@@ -3,10 +3,10 @@ package com.lib_for_mentor.lib_for_mentor.controller;
 
 import com.lib_for_mentor.lib_for_mentor.entity.Book;
 import com.lib_for_mentor.lib_for_mentor.mapper.BookMapper;
-import com.lib_for_mentor.lib_for_mentor.model.dto.BookParamsDTO;
+import com.lib_for_mentor.lib_for_mentor.model.response.BookResponseDTO;
+import com.lib_for_mentor.lib_for_mentor.model.param.BookParamsDTO;
 import com.lib_for_mentor.lib_for_mentor.service.impl.BookServiceImpl;
-import com.lib_for_mentor.lib_for_mentor.model.BookResponse;
-import com.lib_for_mentor.lib_for_mentor.model.BookRequest;
+import com.lib_for_mentor.lib_for_mentor.model.request.BookRequestDTO;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -26,25 +26,25 @@ public class BookController {
     private final BookMapper bookMapper;
 
     @PostMapping(value ="/", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public BookResponse createBook(@RequestBody BookRequest request) {
+    public BookResponseDTO createBook(@RequestBody BookRequestDTO request) {
         Book book = bookService.create(request);
         return bookMapper.bookToBookResponse(book);
     }
 
     @PatchMapping(value ="/{bookId}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public BookResponse updateBook(@PathVariable Integer bookId, @RequestBody BookRequest request) {
+    public BookResponseDTO updateBook(@PathVariable Integer bookId, @RequestBody BookRequestDTO request) {
         Book book = bookService.updateInfo(bookId, request);
         return bookMapper.bookToBookResponse(book);
     }
 
-    @DeleteMapping(value = "/{bookId}", produces = APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/{bookId}")
     public void deleteBook(@PathVariable Integer bookId) {
         bookService.deleteById(bookId);
     }
 
-    @GetMapping(value = "/", produces = APPLICATION_JSON_VALUE)
-    public Page<BookResponse> getBooks(
-            @RequestBody BookParamsDTO params,
+    @GetMapping(value = "/", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    public Page<BookResponseDTO> getBooks(
+            @RequestBody(required = false) BookParamsDTO params,
             @RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset, //Пагинация
             @RequestParam(value = "limit", defaultValue = "10") @Min(1) @Max(100) Integer limit
     ) {
@@ -53,7 +53,7 @@ public class BookController {
     }
 
     @GetMapping(value = "/{bookId}", produces = APPLICATION_JSON_VALUE)
-    public BookResponse getBookById(@PathVariable @NotNull Integer bookId) {
+    public BookResponseDTO getBookById(@PathVariable @NotNull Integer bookId) {
         Book book = bookService.findById(bookId);
         return bookMapper.bookToBookResponse(book);
     }

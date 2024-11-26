@@ -1,4 +1,4 @@
-package com.lib_for_mentor.lib_for_mentor.model.dto;
+package com.lib_for_mentor.lib_for_mentor.model.param;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,5 +8,5 @@ import lombok.Setter;
 public class AuthorParamsDTO {
     private String firstNameCont;
     private String lastNameCont;
-//    private String bookNameCont; ?????
+    private Integer bookIdCont;
 }

@@ -1,10 +1,8 @@
 package com.lib_for_mentor.lib_for_mentor.service.impl;
 
-import com.lib_for_mentor.lib_for_mentor.model.dto.BookParamsDTO;
+import com.lib_for_mentor.lib_for_mentor.model.param.BookParamsDTO;
 import com.lib_for_mentor.lib_for_mentor.entity.Book;
-import com.lib_for_mentor.lib_for_mentor.mapper.BookMapper;
-import com.lib_for_mentor.lib_for_mentor.model.BookResponse;
-import com.lib_for_mentor.lib_for_mentor.model.BookRequest;
+import com.lib_for_mentor.lib_for_mentor.model.request.BookRequestDTO;
 import com.lib_for_mentor.lib_for_mentor.repository.AuthorRepository;
 import com.lib_for_mentor.lib_for_mentor.repository.BookRepository;
 import com.lib_for_mentor.lib_for_mentor.service.BookService;
@@ -23,32 +21,40 @@ public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
     private final BookSpecification bookSpecification;
-    private final BookMapper bookMapper;
     private final AuthorRepository authorRepository;
-    //AuthorRepo
 
     @NotNull
     @Transactional
-    public Book create(@NotNull BookRequest request) {
-        Book book = Book.builder()
-                .title(request.getTitle())
-                .publishedYear(request.getPublishedYear())
-                .description(request.getDescription())
-                .pages(request.getPages())
-                .author(authorRepository.findById(request.getAuthorId()).orElseThrow(() -> new RuntimeException("Author not found")))
-                .build();
-        bookRepository.save(book);
-
+    public Book create(@NotNull BookRequestDTO request) {
+        Book book;
+        if (request.getAuthorId() == null) {
+            book = Book.builder()
+                    .title(request.getTitle())
+                    .publishedYear(request.getPublishedYear())
+                    .description(request.getDescription())
+                    .pages(request.getPages())
+                    .build();
+            bookRepository.save(book);
+        }else{
+            book = Book.builder()
+                    .title(request.getTitle())
+                    .publishedYear(request.getPublishedYear())
+                    .description(request.getDescription())
+                    .pages(request.getPages())
+                    .author(authorRepository.findById(request.getAuthorId()).orElseThrow(() -> new RuntimeException("Author not found")))
+                    .build();
+            bookRepository.save(book);
+        }
         return book;
     }
 
     @NotNull
     @Transactional
-    public Book updateInfo(@NotNull Integer id, @NotNull BookRequest request) {
+    public Book updateInfo(@NotNull Integer id, @NotNull BookRequestDTO request) {
         Book book = bookRepository.findById(id).orElseThrow(() -> new RuntimeException("Book with id = [%s] not found".formatted(id)));
         book.setDescription(request.getDescription());
         book.setPages(request.getPages());
-        book.setPublishedYear(request.getPublishedYear());  //Нужно ли создать класс, где это само реализуется?
+        book.setPublishedYear(request.getPublishedYear());
         book.setTitle(request.getTitle());
         book.setAuthor(authorRepository.findById(request.getAuthorId()).orElseThrow(() -> new RuntimeException("Author not found")));
         bookRepository.save(book);
@@ -68,8 +74,11 @@ public class BookServiceImpl implements BookService {
     @Transactional(readOnly = true)
     public Page<Book> getAllBooks(BookParamsDTO params, Integer offset, Integer limit) {
         PageRequest pageRequest = PageRequest.of(offset, limit);
-        Page <Book> books = bookRepository.findAll(bookSpecification.build(params), pageRequest);
-        return books;
+        if(params != null) {
+            return bookRepository.findAll(bookSpecification.build(params), pageRequest);
+        }else{
+            return bookRepository.findAll(pageRequest);
+        }
     }
 
     @NotNull
@@ -78,6 +87,4 @@ public class BookServiceImpl implements BookService {
         Book book = bookRepository.findById(id).orElseThrow(() -> new RuntimeException("Book with id = [%s] not found".formatted(id)));
         return book;
     }
-
-
 }

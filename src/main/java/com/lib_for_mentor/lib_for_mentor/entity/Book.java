@@ -1,6 +1,7 @@
 package com.lib_for_mentor.lib_for_mentor.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.CriteriaBuilder;

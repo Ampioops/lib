@@ -1,6 +1,5 @@
 package com.lib_for_mentor.lib_for_mentor.entity;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 

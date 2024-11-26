@@ -1,6 +1,6 @@
-package com.lib_for_mentor.lib_for_mentor.model;
+package com.lib_for_mentor.lib_for_mentor.model.response;
 
-import com.lib_for_mentor.lib_for_mentor.entity.Book;
+import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -8,9 +8,10 @@ import java.util.List;
 
 @Data
 @Accessors(chain = true)
-public class AuthorResponse {
+@Builder
+public class AuthorResponseDTO {
     private Integer id;
     private String firstName;
     private String lastName;
-    private List<BookResponse> books;
+    private List<BookResponseDTO> books;
 }

@@ -1,16 +1,12 @@
 package com.lib_for_mentor.lib_for_mentor.mapper;
 
 import com.lib_for_mentor.lib_for_mentor.entity.Book;
-import com.lib_for_mentor.lib_for_mentor.model.BookResponse;
+import com.lib_for_mentor.lib_for_mentor.model.response.BookResponseDTO;
 import org.mapstruct.Mapper;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapping;
 
-import java.util.List;
-
-@Component
 @Mapper(componentModel = "spring")
 public interface BookMapper {
-    BookResponse bookToBookResponse(Book book);
-    Book bookResponseToBook(BookResponse bookResponse);
+    @Mapping(target = "authorId", source = "author.id")
+    BookResponseDTO bookToBookResponse(Book book);
 }
