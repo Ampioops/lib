@@ -8,7 +8,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @Builder
 public class BookRequestDTO {
-    private Integer id;
     private String title;
     private Integer publishedYear;
     private Integer pages;

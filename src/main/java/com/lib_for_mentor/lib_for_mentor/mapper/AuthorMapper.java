@@ -10,5 +10,4 @@ import org.springframework.stereotype.Component;
 @Mapper(componentModel = "spring")
 public interface AuthorMapper {
     AuthorResponseDTO authorToAuthorResponse(Author author);
-    AuthorResponseNoAuthorIdsInBooksDTO authorToAuthorResponseNoAuthorIdsInBooksDTO(Author author);
 }
