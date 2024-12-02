@@ -36,7 +36,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional
     public AuthorResponseDTO create(@NotNull CreateAuthorRequestDTO request) {
         List<Book> books = request.getBooks().stream()
-                .map(bookMapper::bookRequestDTOToBook)
+                .map(bookRequestDTO -> bookMapper.bookRequestDTOToBook(authorRepository, bookRequestDTO))
                 .toList();
         Author author = Author.builder()
                 .firstName(request.getFirstName())
@@ -82,7 +82,7 @@ public class AuthorServiceImpl implements AuthorService {
     @NotNull
     @Transactional
     public AuthorResponseDTO assignBook(@NotNull Integer authorId, @NotNull Integer bookId) {
-        Book book = bookMapper.bookResponseDTOToBook(bookServiceImpl.findById(bookId));
+        Book book = bookMapper.bookResponseDTOToBook(authorRepository, bookServiceImpl.findById(bookId));
         Author author = authorRepository.findById(authorId)
                 .orElseThrow(() -> new RuntimeException("Author not found"));
         author.addBook(book);
@@ -93,7 +93,7 @@ public class AuthorServiceImpl implements AuthorService {
     @NotNull
     @Transactional
     public AuthorResponseDTO unassignBook(@NotNull Integer authorId, @NotNull Integer bookId) {
-        Book book = bookMapper.bookResponseDTOToBook(bookServiceImpl.findById(bookId));
+        Book book = bookMapper.bookResponseDTOToBook(authorRepository, bookServiceImpl.findById(bookId));
         Author author = authorRepository.findById(authorId)
                 .orElseThrow(() -> new RuntimeException("Author not found"));
         author.removeBook(book);
