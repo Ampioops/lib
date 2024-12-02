@@ -17,7 +17,7 @@ public abstract class BookMapper {
     protected AuthorRepository authorRepository;
 
     @Mapping(target = "authorId", source = "author.id")
-    public abstract BookResponseDTO bookToBookResponse(Book book);
+    public abstract BookResponseDTO toBookResponse(Book book);
 
     @Mapping(target = "author", source = "authorId")
     public abstract Book bookRequestDTOToBook(BookRequestDTO bookRequestDTO);
@@ -29,4 +29,7 @@ public abstract class BookMapper {
         return authorRepository.findById(authorId)
                 .orElseThrow(() -> new IllegalArgumentException("Author not found with id: " + authorId));
     }
+
+    @Mapping(target = "author", source = "authorId")
+    public abstract Book bookResponseDTOToBook(BookResponseDTO bookResponseDTO);
 }

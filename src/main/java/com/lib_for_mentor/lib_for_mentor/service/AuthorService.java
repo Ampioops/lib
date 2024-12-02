@@ -25,5 +25,8 @@ public interface AuthorService {
     AuthorResponseDTO findById(@NotNull Integer id);
 
     @NotNull
-    AuthorResponseDTO assignBook (@NotNull Integer authorId, @NotNull Integer bookId); //---Остановка тут
+    AuthorResponseDTO assignBook (@NotNull Integer authorId, @NotNull Integer bookId);
+
+    @NotNull
+    AuthorResponseDTO unassignBook (@NotNull Integer authorId, @NotNull Integer bookId);
 }

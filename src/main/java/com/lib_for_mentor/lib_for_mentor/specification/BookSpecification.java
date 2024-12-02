@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 public class BookSpecification {
 
     public Specification<Book> build(BookParamsDTO params) {
+        if (params == null) {
+            return null;
+        }
         return withAuthor(params.getAuthorCont())
                 .and(withPagesGt(params.getPagesGt()))
                 .and(withPagesLt(params.getPagesLt()))

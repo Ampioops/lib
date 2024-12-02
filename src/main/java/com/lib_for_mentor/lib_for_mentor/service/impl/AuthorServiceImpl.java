@@ -3,14 +3,13 @@ package com.lib_for_mentor.lib_for_mentor.service.impl;
 import com.lib_for_mentor.lib_for_mentor.entity.Author;
 import com.lib_for_mentor.lib_for_mentor.entity.Book;
 import com.lib_for_mentor.lib_for_mentor.mapper.AuthorMapper;
+import com.lib_for_mentor.lib_for_mentor.mapper.BookMapper;
 import com.lib_for_mentor.lib_for_mentor.mapper.BookMapperImpl;
 import com.lib_for_mentor.lib_for_mentor.model.request.AuthorRequestDTO;
-import com.lib_for_mentor.lib_for_mentor.model.request.BookRequestDTO;
 import com.lib_for_mentor.lib_for_mentor.model.request.CreateAuthorRequestDTO;
 import com.lib_for_mentor.lib_for_mentor.model.param.AuthorParamsDTO;
 import com.lib_for_mentor.lib_for_mentor.model.response.AuthorResponseDTO;
 import com.lib_for_mentor.lib_for_mentor.repository.AuthorRepository;
-import com.lib_for_mentor.lib_for_mentor.repository.BookRepository;
 import com.lib_for_mentor.lib_for_mentor.service.AuthorService;
 import com.lib_for_mentor.lib_for_mentor.specification.AuthorSpecification;
 import jakarta.validation.constraints.NotNull;
@@ -29,16 +28,15 @@ public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorRepository authorRepository;
     private final AuthorMapper authorMapper;
-    private final BookRepository bookRepository;
     private final BookServiceImpl bookServiceImpl;
     private final AuthorSpecification authorSpecification;
-    private final BookMapperImpl bookMapperImpl;
+    private final BookMapper bookMapper;
 
     @NotNull
     @Transactional
     public AuthorResponseDTO create(@NotNull CreateAuthorRequestDTO request) {
         List<Book> books = request.getBooks().stream()
-                .map(bookMapperImpl::bookRequestDTOToBook)
+                .map(bookMapper::bookRequestDTOToBook)
                 .toList();
         Author author = Author.builder()
                 .firstName(request.getFirstName())
@@ -46,7 +44,7 @@ public class AuthorServiceImpl implements AuthorService {
                 .books(books)
                 .build();
         authorRepository.save(author);
-        return authorMapper.authorToAuthorResponse(author);
+        return authorMapper.toAuthorResponse(author);
     }
 
     @NotNull
@@ -56,7 +54,7 @@ public class AuthorServiceImpl implements AuthorService {
         author.setFirstName(request.getFirstName());
         author.setLastName(request.getLastName());
         authorRepository.save(author);
-        return authorMapper.authorToAuthorResponse(author);
+        return authorMapper.toAuthorResponse(author);
     }
 
     @NotNull
@@ -71,24 +69,35 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional(readOnly = true)
     public Page<AuthorResponseDTO> getAuthors(AuthorParamsDTO params, Integer offset, Integer limit) {
         PageRequest pageRequest = PageRequest.of(offset, limit);
-        return (authorRepository.findAll(authorSpecification.build(params), pageRequest)).map(authorMapper::authorToAuthorResponse);
+        return (authorRepository.findAll(authorSpecification.build(params), pageRequest)).map(authorMapper::toAuthorResponse);
     }
 
     @NotNull
     public AuthorResponseDTO findById(@NotNull Integer id) {
         Author author = authorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Author not found"));
-        return authorMapper.authorToAuthorResponse(author);
+        return authorMapper.toAuthorResponse(author);
     }
 
     @NotNull
     @Transactional
-    public AuthorResponseDTO assignBook(@NotNull Integer authorId,@NotNull Integer bookId) {
-        Book book = bookServiceImpl.findById(bookId);
+    public AuthorResponseDTO assignBook(@NotNull Integer authorId, @NotNull Integer bookId) {
+        Book book = bookMapper.bookResponseDTOToBook(bookServiceImpl.findById(bookId));
         Author author = authorRepository.findById(authorId)
                 .orElseThrow(() -> new RuntimeException("Author not found"));
-        book.setAuthor(author);
-        bookRepository.save(book);
-        return authorMapper.authorToAuthorResponse(author);
+        author.addBook(book);
+        authorRepository.save(author);
+        return authorMapper.toAuthorResponse(author);
+    }
+
+    @NotNull
+    @Transactional
+    public AuthorResponseDTO unassignBook(@NotNull Integer authorId, @NotNull Integer bookId) {
+        Book book = bookMapper.bookResponseDTOToBook(bookServiceImpl.findById(bookId));
+        Author author = authorRepository.findById(authorId)
+                .orElseThrow(() -> new RuntimeException("Author not found"));
+        author.removeBook(book);
+        authorRepository.save(author);
+        return authorMapper.toAuthorResponse(author);
     }
 }

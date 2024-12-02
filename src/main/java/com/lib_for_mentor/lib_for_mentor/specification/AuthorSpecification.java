@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class AuthorSpecification {
     public Specification<Author> build(AuthorParamsDTO params) {
+        if (params == null) {
+            return null;
+        }
         return withFirstNameCont(params.getFirstNameCont())
                 .and(withLastNameCont(params.getLastNameCont()))
                 .and(withBookId(params.getBookIdCont()));
