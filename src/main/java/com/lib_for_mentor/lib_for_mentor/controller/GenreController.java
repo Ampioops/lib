@@ -46,12 +46,12 @@ public class GenreController {
     }
 
     @DeleteMapping(value = "/{genreId}")
-    public void deleteAuthor(@PathVariable Integer genreId) {
+    public void deleteGenre(@PathVariable Integer genreId) {
         genreService.deleteById(genreId);
     }
 
     @GetMapping(value = "/", produces = APPLICATION_JSON_VALUE)
-    public Page<GenreResponseDTO> getAuthors(
+    public Page<GenreResponseDTO> getGenres(
             @RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset, //Пагинация
             @RequestParam(value = "limit", defaultValue = "10") @Min(1) @Max(100) Integer limit
     ) {
@@ -59,7 +59,7 @@ public class GenreController {
     }
 
     @GetMapping(value = "/{genreId}", produces = APPLICATION_JSON_VALUE)
-    public GenreResponseDTO getAuthorById(@PathVariable @NotNull Integer genreId) {
+    public GenreResponseDTO getGenreById(@PathVariable @NotNull Integer genreId) {
         return genreService.findById(genreId);
     }
 

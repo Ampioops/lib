@@ -4,9 +4,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.util.List;
+
 @Data
 @Accessors(chain = true)
 @Builder
 public class GenreRequestDTO {
     private String name;
+    private List<BookRequestDTO> books;
 }

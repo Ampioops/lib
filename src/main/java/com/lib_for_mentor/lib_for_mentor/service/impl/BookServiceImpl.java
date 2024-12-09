@@ -7,6 +7,7 @@ import com.lib_for_mentor.lib_for_mentor.model.request.BookRequestDTO;
 import com.lib_for_mentor.lib_for_mentor.model.response.BookResponseDTO;
 import com.lib_for_mentor.lib_for_mentor.repository.AuthorRepository;
 import com.lib_for_mentor.lib_for_mentor.repository.BookRepository;
+import com.lib_for_mentor.lib_for_mentor.repository.GenreRepository;
 import com.lib_for_mentor.lib_for_mentor.service.BookService;
 import com.lib_for_mentor.lib_for_mentor.specification.BookSpecification;
 import jakarta.validation.constraints.NotNull;
@@ -25,6 +26,7 @@ public class BookServiceImpl implements BookService {
     private final BookSpecification bookSpecification;
     private final AuthorRepository authorRepository;
     private final BookMapperImpl bookMapperImpl;
+    private final GenreRepository genreRepository;
 
     @NotNull
     @Transactional
@@ -49,6 +51,7 @@ public class BookServiceImpl implements BookService {
         book.setPublishedYear(request.getPublishedYear());
         book.setTitle(request.getTitle());
         book.setAuthor(authorRepository.findById(request.getAuthorId()).orElseThrow(() -> new RuntimeException("Author not found")));
+        book.setGenre(genreRepository.findById(request.getGenreId()).orElseThrow(() -> new RuntimeException("Genre not found")));
         bookRepository.save(book);
         return bookMapperImpl.toBookResponse(book);
     }

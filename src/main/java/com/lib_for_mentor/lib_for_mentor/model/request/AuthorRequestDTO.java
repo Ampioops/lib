@@ -8,7 +8,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @Builder
 public class AuthorRequestDTO {
-    private Integer id;
     private String firstName;
     private String lastName;
 }

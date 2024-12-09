@@ -11,13 +11,17 @@ import lombok.RequiredArgsConstructor;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Mapper(componentModel = "spring")
 public abstract class BookMapper {
 
-    @Mapping(target = "authorId", source = "author.id")
+    @Mappings({
+            @Mapping(target = "authorId", source = "author.id"),
+            @Mapping(target = "genreId", source = "genre.id")
+    })
     public abstract BookResponseDTO toBookResponse(Book book);
 
     @Mapping(target = "author", expression = "java(mapAuthor(bookRequestDTO.getAuthorId(), authorRepository))")

@@ -17,6 +17,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class GenreServiceImpl implements GenreService {
@@ -30,8 +32,12 @@ public class GenreServiceImpl implements GenreService {
     @NotNull
     @Transactional
     public GenreResponseDTO create(@NotNull GenreRequestDTO request) {
+        List<Book> books = request.getBooks().stream()
+                .map(bookRequestDTO -> bookMapper.bookRequestDTOToBook(genreRepository, bookRequestDTO))
+                .toList();
         Genre genre = Genre.builder()
                 .name(request.getName())
+                .books(books)
                 .build();
         genreRepository.save(genre);
         return genreMapper.toGenreResponse(genre);
