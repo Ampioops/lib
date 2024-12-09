@@ -3,10 +3,12 @@ package com.lib_for_mentor.lib_for_mentor.mapper;
 import com.lib_for_mentor.lib_for_mentor.entity.Author;
 import com.lib_for_mentor.lib_for_mentor.entity.Book;
 import com.lib_for_mentor.lib_for_mentor.entity.Genre;
+import com.lib_for_mentor.lib_for_mentor.entity.Publisher;
 import com.lib_for_mentor.lib_for_mentor.model.request.BookRequestDTO;
 import com.lib_for_mentor.lib_for_mentor.model.response.BookResponseDTO;
 import com.lib_for_mentor.lib_for_mentor.repository.AuthorRepository;
 import com.lib_for_mentor.lib_for_mentor.repository.GenreRepository;
+import com.lib_for_mentor.lib_for_mentor.repository.PublisherRepository;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
@@ -20,7 +22,8 @@ public abstract class BookMapper {
 
     @Mappings({
             @Mapping(target = "authorId", source = "author.id"),
-            @Mapping(target = "genreId", source = "genre.id")
+            @Mapping(target = "genreId", source = "genre.id"),
+            @Mapping(target = "publisherId", source = "publisher.id")
     })
     public abstract BookResponseDTO toBookResponse(Book book);
 
@@ -35,6 +38,20 @@ public abstract class BookMapper {
 
     @Mapping(target = "genre", expression = "java(mapGenre(bookResponseDTO.getGenreId(), genreRepository))")
     public abstract Book bookResponseDTOToBook(@Context GenreRepository genreRepository, BookResponseDTO bookResponseDTO);
+
+    @Mapping(target = "publisher", expression = "java(mapPublisher(bookRequestDTO.getPublisherId(), publisherRepository))")
+    public abstract Book bookRequestDTOToBook(@Context PublisherRepository publisherRepository, BookRequestDTO bookRequestDTO);
+
+    @Mapping(target = "publisher", expression = "java(mapPublisher(bookResponseDTO.getPublisherId(), publisherRepository))")
+    public abstract Book bookResponseDTOToBook(@Context PublisherRepository publisherRepository, BookResponseDTO bookResponseDTO);
+
+    protected Publisher mapPublisher(Integer publisherId, PublisherRepository publisherRepository) {
+        if (publisherId == null) {
+            return null;
+        }
+        return publisherRepository.findById(publisherId)
+                .orElseThrow(() -> new IllegalArgumentException("Genre not found with id: " + publisherId));
+    }
 
     protected Genre mapGenre(Integer genreId, GenreRepository genreRepository) {
         if (genreId == null) {

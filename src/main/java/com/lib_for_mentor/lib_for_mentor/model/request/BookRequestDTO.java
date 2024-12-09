@@ -14,4 +14,5 @@ public class BookRequestDTO {
     private String description;
     private Integer authorId;
     private Integer genreId;
+    private Integer publisherId;
 }

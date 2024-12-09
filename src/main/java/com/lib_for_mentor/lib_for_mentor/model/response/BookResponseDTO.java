@@ -15,4 +15,5 @@ public class BookResponseDTO {
     private String description;
     private Integer authorId;
     private Integer genreId;
+    private Integer publisherId;
 }
