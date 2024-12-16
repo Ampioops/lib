@@ -1,7 +1,6 @@
 package com.lib_for_mentor.lib_for_mentor.service.impl;
 
 import com.lib_for_mentor.lib_for_mentor.entity.Book;
-import com.lib_for_mentor.lib_for_mentor.entity.Genre;
 import com.lib_for_mentor.lib_for_mentor.entity.Publisher;
 import com.lib_for_mentor.lib_for_mentor.mapper.BookMapper;
 import com.lib_for_mentor.lib_for_mentor.mapper.PublisherMapper;
@@ -9,6 +8,7 @@ import com.lib_for_mentor.lib_for_mentor.model.request.PublisherRequestDTO;
 import com.lib_for_mentor.lib_for_mentor.model.response.PublisherResponseDTO;
 import com.lib_for_mentor.lib_for_mentor.repository.BookRepository;
 import com.lib_for_mentor.lib_for_mentor.repository.PublisherRepository;
+import com.lib_for_mentor.lib_for_mentor.service.BookService;
 import com.lib_for_mentor.lib_for_mentor.service.PublisherService;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -27,19 +27,24 @@ public class PublisherServiceImpl implements PublisherService {
     private final PublisherRepository publisherRepository;
     private final PublisherMapper publisherMapper;
     private final BookMapper bookMapper;
-    private final BookServiceImpl bookServiceImpl;
+    private final BookService bookService;
     private final BookRepository bookRepository;
 
     @NotNull
     @Transactional
     public PublisherResponseDTO create(@NotNull PublisherRequestDTO request) {
         List<Book> books = request.getBooks().stream()
-                .map(bookRequestDTO -> bookMapper.bookRequestDTOToBook(publisherRepository, bookRequestDTO))
+                .map(bookMapper::bookRequestDTOToBook)
+                .peek(book -> book.setAuthor(null)) // Не изменяет элемент стрима
                 .toList();
+
         Publisher publisher = Publisher.builder()
                 .name(request.getName())
                 .books(books)
                 .build();
+
+        books.forEach(book -> book.setPublisher(publisher));
+
         publisherRepository.save(publisher);
         return publisherMapper.toPublisherResponse(publisher);
     }
@@ -64,7 +69,8 @@ public class PublisherServiceImpl implements PublisherService {
     @Transactional(readOnly = true)
     public Page<PublisherResponseDTO> getPublishers(Integer offset, Integer limit) {
         PageRequest pageRequest = PageRequest.of(offset, limit);
-        return publisherRepository.findAll(pageRequest).map(publisherMapper::toPublisherResponse);
+        return publisherRepository.findAll(pageRequest)
+                .map(publisherMapper::toPublisherResponse);
     }
 
     @NotNull
@@ -77,22 +83,26 @@ public class PublisherServiceImpl implements PublisherService {
     @NotNull
     @Transactional
     public PublisherResponseDTO assignBook(@NotNull Integer publisherId, @NotNull Integer bookId) {
-        Book book = bookMapper.bookResponseDTOToBook(publisherRepository, bookServiceImpl.findById(bookId));
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new RuntimeException("Book not found"));
         Publisher publisher = publisherRepository.findById(publisherId)
                 .orElseThrow(() -> new RuntimeException("Publisher not found"));
         book.setPublisher(publisher);
         bookRepository.save(book);
+        publisher.addBook(book);
         return publisherMapper.toPublisherResponse(publisher);
     }
 
     @NotNull
     @Transactional
     public PublisherResponseDTO unassignBook(@NotNull Integer publisherId, @NotNull Integer bookId) {
-        Book book = bookMapper.bookResponseDTOToBook(publisherRepository, bookServiceImpl.findById(bookId));
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new RuntimeException("Book not found"));
         Publisher publisher = publisherRepository.findById(publisherId)
                 .orElseThrow(() -> new RuntimeException("Publisher not found"));
         book.setPublisher(null);
         bookRepository.save(book);
+        publisher.removeBook(book);
         return publisherMapper.toPublisherResponse(publisher);
     }
 }

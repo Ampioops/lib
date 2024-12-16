@@ -4,6 +4,7 @@ import com.lib_for_mentor.lib_for_mentor.model.param.AuthorParamsDTO;
 import com.lib_for_mentor.lib_for_mentor.model.request.AuthorRequestDTO;
 import com.lib_for_mentor.lib_for_mentor.model.request.CreateAuthorRequestDTO;
 import com.lib_for_mentor.lib_for_mentor.model.response.AuthorResponseDTO;
+import com.lib_for_mentor.lib_for_mentor.service.AuthorService;
 import com.lib_for_mentor.lib_for_mentor.service.impl.AuthorServiceImpl;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -19,7 +20,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequiredArgsConstructor //Автоматом конструктор создает DI
 public class AuthorController {
 
-    private final AuthorServiceImpl authorService;
+    private final AuthorService authorService;
 
     @PostMapping(value ="/", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public AuthorResponseDTO createAuthor(@RequestBody CreateAuthorRequestDTO request) {

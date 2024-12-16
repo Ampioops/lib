@@ -1,6 +1,7 @@
 package com.lib_for_mentor.lib_for_mentor.service.impl;
 
 import com.lib_for_mentor.lib_for_mentor.entity.Book;
+import com.lib_for_mentor.lib_for_mentor.mapper.BookMapper;
 import com.lib_for_mentor.lib_for_mentor.mapper.BookMapperImpl;
 import com.lib_for_mentor.lib_for_mentor.model.param.BookParamsDTO;
 import com.lib_for_mentor.lib_for_mentor.model.request.BookRequestDTO;
@@ -26,7 +27,7 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final BookSpecification bookSpecification;
     private final AuthorRepository authorRepository;
-    private final BookMapperImpl bookMapperImpl;
+    private final BookMapper bookMapper;
     private final GenreRepository genreRepository;
     private final PublisherRepository publisherRepository;
 
@@ -43,7 +44,7 @@ public class BookServiceImpl implements BookService {
                 .publisher(publisherRepository.findById(request.getPublisherId()).orElse(null))
                 .build();
         bookRepository.save(book);
-        return bookMapperImpl.toBookResponse(book);
+        return bookMapper.toBookResponse(book);
     }
 
     @NotNull
@@ -54,11 +55,14 @@ public class BookServiceImpl implements BookService {
         book.setPages(request.getPages());
         book.setPublishedYear(request.getPublishedYear());
         book.setTitle(request.getTitle());
-        book.setAuthor(authorRepository.findById(request.getAuthorId()).orElseThrow(() -> new RuntimeException("Author not found")));
-        book.setGenre(genreRepository.findById(request.getGenreId()).orElseThrow(() -> new RuntimeException("Genre not found")));
-        book.setPublisher(publisherRepository.findById(request.getPublisherId()).orElseThrow(() -> new RuntimeException("Publisher not found")));
+        book.setAuthor(authorRepository.findById(request.getAuthorId())
+                .orElseThrow(() -> new RuntimeException("Author not found")));
+        book.setGenre(genreRepository.findById(request.getGenreId())
+                .orElseThrow(() -> new RuntimeException("Genre not found")));
+        book.setPublisher(publisherRepository.findById(request.getPublisherId())
+                .orElseThrow(() -> new RuntimeException("Publisher not found")));
         bookRepository.save(book);
-        return bookMapperImpl.toBookResponse(book);
+        return bookMapper.toBookResponse(book);
     }
 
     @NotNull
@@ -73,13 +77,15 @@ public class BookServiceImpl implements BookService {
     @Transactional(readOnly = true)
     public Page<BookResponseDTO> getAllBooks(BookParamsDTO params, Integer offset, Integer limit) {
         PageRequest pageRequest = PageRequest.of(offset, limit);
-        return bookRepository.findAll(bookSpecification.build(params), pageRequest).map(bookMapperImpl::toBookResponse);
+        return bookRepository.findAll(bookSpecification.build(params), pageRequest)
+                .map(bookMapper::toBookResponse);
     }
 
     @NotNull
     @Transactional(readOnly = true)
     public BookResponseDTO findById(@NotNull Integer id) {
-        Book book = bookRepository.findById(id).orElseThrow(() -> new RuntimeException("Book with id = [%s] not found".formatted(id)));
-        return bookMapperImpl.toBookResponse(book);
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Book with id = [%s] not found".formatted(id)));
+        return bookMapper.toBookResponse(book);
     }
 }

@@ -2,6 +2,7 @@ package com.lib_for_mentor.lib_for_mentor.controller;
 
 import com.lib_for_mentor.lib_for_mentor.model.response.BookResponseDTO;
 import com.lib_for_mentor.lib_for_mentor.model.param.BookParamsDTO;
+import com.lib_for_mentor.lib_for_mentor.service.BookService;
 import com.lib_for_mentor.lib_for_mentor.service.impl.BookServiceImpl;
 import com.lib_for_mentor.lib_for_mentor.model.request.BookRequestDTO;
 import jakarta.validation.constraints.Max;
@@ -19,7 +20,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 public class BookController {
 
-    private final BookServiceImpl bookService;
+    private final BookService bookService;
 
     @PostMapping(value ="/", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public BookResponseDTO createBook(@RequestBody BookRequestDTO request) {

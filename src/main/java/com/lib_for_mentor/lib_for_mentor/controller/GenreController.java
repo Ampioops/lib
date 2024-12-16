@@ -7,6 +7,7 @@ import com.lib_for_mentor.lib_for_mentor.model.request.GenreRequestDTO;
 import com.lib_for_mentor.lib_for_mentor.model.response.AuthorResponseDTO;
 import com.lib_for_mentor.lib_for_mentor.model.response.GenreResponseDTO;
 import com.lib_for_mentor.lib_for_mentor.repository.GenreRepository;
+import com.lib_for_mentor.lib_for_mentor.service.GenreService;
 import com.lib_for_mentor.lib_for_mentor.service.impl.AuthorServiceImpl;
 import com.lib_for_mentor.lib_for_mentor.service.impl.GenreServiceImpl;
 import jakarta.validation.constraints.Max;
@@ -23,7 +24,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequiredArgsConstructor
 public class GenreController {
 
-    private final GenreServiceImpl genreService;
+    private final GenreService genreService;
 
     @PostMapping(value ="/", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public GenreResponseDTO createGenre(@RequestBody GenreRequestDTO request) {

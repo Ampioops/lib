@@ -1,10 +1,8 @@
 package com.lib_for_mentor.lib_for_mentor.controller;
 
-import com.lib_for_mentor.lib_for_mentor.model.request.GenreRequestDTO;
 import com.lib_for_mentor.lib_for_mentor.model.request.PublisherRequestDTO;
-import com.lib_for_mentor.lib_for_mentor.model.response.GenreResponseDTO;
 import com.lib_for_mentor.lib_for_mentor.model.response.PublisherResponseDTO;
-import com.lib_for_mentor.lib_for_mentor.service.impl.GenreServiceImpl;
+import com.lib_for_mentor.lib_for_mentor.service.PublisherService;
 import com.lib_for_mentor.lib_for_mentor.service.impl.PublisherServiceImpl;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -20,7 +18,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequiredArgsConstructor
 public class PublisherController {
 
-    private final PublisherServiceImpl publisherService;
+    private final PublisherService publisherService;
 
     @PostMapping(value ="/", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public PublisherResponseDTO createGenre(@RequestBody PublisherRequestDTO request) {

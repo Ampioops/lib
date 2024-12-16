@@ -8,6 +8,7 @@ import com.lib_for_mentor.lib_for_mentor.model.request.GenreRequestDTO;
 import com.lib_for_mentor.lib_for_mentor.model.response.GenreResponseDTO;
 import com.lib_for_mentor.lib_for_mentor.repository.BookRepository;
 import com.lib_for_mentor.lib_for_mentor.repository.GenreRepository;
+import com.lib_for_mentor.lib_for_mentor.service.BookService;
 import com.lib_for_mentor.lib_for_mentor.service.GenreService;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,6 @@ public class GenreServiceImpl implements GenreService {
 
     private final GenreRepository genreRepository;
     private final BookMapper bookMapper;
-    private final BookServiceImpl bookServiceImpl;
     private final BookRepository bookRepository;
     private final GenreMapper genreMapper;
 
@@ -33,12 +33,17 @@ public class GenreServiceImpl implements GenreService {
     @Transactional
     public GenreResponseDTO create(@NotNull GenreRequestDTO request) {
         List<Book> books = request.getBooks().stream()
-                .map(bookRequestDTO -> bookMapper.bookRequestDTOToBook(genreRepository, bookRequestDTO))
+                .map(bookMapper::bookRequestDTOToBook)
+                .peek(book -> book.setAuthor(null)) // Не изменяет элемент стрима
                 .toList();
+
         Genre genre = Genre.builder()
                 .name(request.getName())
                 .books(books)
                 .build();
+
+        books.forEach(book -> book.setGenre(genre));
+
         genreRepository.save(genre);
         return genreMapper.toGenreResponse(genre);
     }
@@ -63,7 +68,8 @@ public class GenreServiceImpl implements GenreService {
     @Transactional(readOnly = true)
     public Page<GenreResponseDTO> getGenres(Integer offset, Integer limit) {
         PageRequest pageRequest = PageRequest.of(offset, limit);
-        return genreRepository.findAll(pageRequest).map(genreMapper::toGenreResponse);
+        return genreRepository.findAll(pageRequest)
+                .map(genreMapper::toGenreResponse);
     }
 
     @NotNull
@@ -76,22 +82,26 @@ public class GenreServiceImpl implements GenreService {
     @NotNull
     @Transactional
     public GenreResponseDTO assignBook(@NotNull Integer genreId, @NotNull Integer bookId) {
-        Book book = bookMapper.bookResponseDTOToBook(genreRepository, bookServiceImpl.findById(bookId));
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new RuntimeException("Book not found"));
         Genre genre = genreRepository.findById(genreId)
-                .orElseThrow(() -> new RuntimeException("genre not found"));
+                .orElseThrow(() -> new RuntimeException("Genre not found"));
         book.setGenre(genre);
         bookRepository.save(book);
+        genre.addBook(book);
         return genreMapper.toGenreResponse(genre);
     }
 
     @NotNull
     @Transactional
     public GenreResponseDTO unassignBook(@NotNull Integer genreId, @NotNull Integer bookId) {
-        Book book = bookMapper.bookResponseDTOToBook(genreRepository, bookServiceImpl.findById(bookId));
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new RuntimeException("Book not found"));
         Genre genre = genreRepository.findById(genreId)
                 .orElseThrow(() -> new RuntimeException("genre not found"));
         book.setGenre(null);
         bookRepository.save(book);
+        genre.removeBook(book);
         return genreMapper.toGenreResponse(genre);
     }
 }
