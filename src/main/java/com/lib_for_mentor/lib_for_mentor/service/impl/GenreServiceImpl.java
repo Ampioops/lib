@@ -34,7 +34,7 @@ public class GenreServiceImpl implements GenreService {
     public GenreResponseDTO create(@NotNull GenreRequestDTO request) {
         List<Book> books = request.getBooks().stream()
                 .map(bookMapper::bookRequestDTOToBook)
-                .peek(book -> book.setAuthor(null)) // Не изменяет элемент стрима
+                .peek(book -> book.setGenre(null)) // Не изменяет элемент стрима
                 .toList();
 
         Genre genre = Genre.builder()

@@ -35,7 +35,7 @@ public class PublisherServiceImpl implements PublisherService {
     public PublisherResponseDTO create(@NotNull PublisherRequestDTO request) {
         List<Book> books = request.getBooks().stream()
                 .map(bookMapper::bookRequestDTOToBook)
-                .peek(book -> book.setAuthor(null)) // Не изменяет элемент стрима
+                .peek(book -> book.setPublisher(null)) // Не изменяет элемент стрима
                 .toList();
 
         Publisher publisher = Publisher.builder()
