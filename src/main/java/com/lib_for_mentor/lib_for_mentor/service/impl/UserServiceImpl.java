@@ -1,19 +1,16 @@
 package com.lib_for_mentor.lib_for_mentor.service.impl;
 
-import com.lib_for_mentor.lib_for_mentor.entity.Author;
 import com.lib_for_mentor.lib_for_mentor.entity.Book;
-import com.lib_for_mentor.lib_for_mentor.mapper.AuthorMapper;
+import com.lib_for_mentor.lib_for_mentor.entity.User;
 import com.lib_for_mentor.lib_for_mentor.mapper.BookMapper;
-import com.lib_for_mentor.lib_for_mentor.model.param.AuthorParamsDTO;
-import com.lib_for_mentor.lib_for_mentor.model.request.AuthorRequestDTO;
-import com.lib_for_mentor.lib_for_mentor.model.request.CreateAuthorRequestDTO;
-import com.lib_for_mentor.lib_for_mentor.model.response.AuthorResponseDTO;
-import com.lib_for_mentor.lib_for_mentor.repository.AuthorRepository;
+import com.lib_for_mentor.lib_for_mentor.mapper.UserMapper;
+import com.lib_for_mentor.lib_for_mentor.model.param.UserParamsDTO;
+import com.lib_for_mentor.lib_for_mentor.model.request.UserRequestDTO;
+import com.lib_for_mentor.lib_for_mentor.model.response.UserResponseDTO;
 import com.lib_for_mentor.lib_for_mentor.repository.BookRepository;
 import com.lib_for_mentor.lib_for_mentor.repository.UserRepository;
-import com.lib_for_mentor.lib_for_mentor.service.AuthorService;
 import com.lib_for_mentor.lib_for_mentor.service.UserService;
-import com.lib_for_mentor.lib_for_mentor.specification.AuthorSpecification;
+import com.lib_for_mentor.lib_for_mentor.specification.UserSpecification;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,82 +33,86 @@ public class UserServiceImpl implements UserService {
 
     @NotNull
     @Transactional
-    public AuthorResponseDTO create(@NotNull CreateAuthorRequestDTO request) {
-        List<Book> books = request.getBooks().stream()
-                .map(bookMapper::bookRequestDTOToBook)
-                .peek(book -> book.setAuthor(null)) // Не изменяет элемент стрима
-                .toList();
-
-        Author author = Author.builder()
+    public UserResponseDTO create(@NotNull UserRequestDTO request) {
+        List<Book> books =  bookRepository.findAllById(request.getBooksId());
+        User user = User.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
-                .books(books)
+                .email(request.getEmail())
                 .build();
 
-        // Установка связи "книга -> автор"
-        books.forEach(book -> book.setAuthor(author));
+        // Установка связи "книга -> пользователь"
+        user.setBooks(books);
+        userRepository.save(user);
 
-        authorRepository.save(author);
-        return authorMapper.toAuthorResponse(author);
+        return userMapper.toUserResponse(user);
     }
 
     @NotNull
     @Transactional
-    public AuthorResponseDTO updateAuthorInfo(@NotNull Integer id, @NotNull AuthorRequestDTO request) {
-        Author author = authorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Author not found"));
-        author.setFirstName(request.getFirstName());
-        author.setLastName(request.getLastName());
-        authorRepository.save(author);
-        return authorMapper.toAuthorResponse(author);
+    public UserResponseDTO updateUserInfo(@NotNull Integer id, @NotNull UserRequestDTO request) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setEmail(request.getEmail());
+        userRepository.save(user);
+        return userMapper.toUserResponse(user);
     }
 
     @NotNull
     @Transactional
     public void deleteById(@NotNull Integer id) {
-        Author author = authorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Author not found"));
-        authorRepository.delete(author);
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        userRepository.delete(user);
     }
 
     @NotNull
     @Transactional(readOnly = true)
-    public Page<AuthorResponseDTO> getAuthors(AuthorParamsDTO params, Integer offset, Integer limit) {
+    public Page<UserResponseDTO> getUsers(UserParamsDTO params, Integer offset, Integer limit) {
         PageRequest pageRequest = PageRequest.of(offset, limit);
-        return authorRepository.findAll(authorSpecification.build(params), pageRequest)
-                .map(authorMapper::toAuthorResponse);
+        return userRepository.findAll(userSpecification.build(params), pageRequest)
+                .map(userMapper::toUserResponse);
     }
 
     @NotNull
-    public AuthorResponseDTO findById(@NotNull Integer id) {
-        Author author = authorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Author not found"));
-        return authorMapper.toAuthorResponse(author);
-    }
-
-    @NotNull
-    @Transactional
-    public AuthorResponseDTO assignBook(@NotNull Integer authorId, @NotNull Integer bookId) {
-        Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new RuntimeException("Book not found"));
-        Author author = authorRepository.findById(authorId)
-                .orElseThrow(() -> new RuntimeException("Author not found"));
-        book.setAuthor(author);
-        bookRepository.save(book);
-        author.addBook(book);
-        return authorMapper.toAuthorResponse(author);
+    public UserResponseDTO findById(@NotNull Integer id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return userMapper.toUserResponse(user);
     }
 
     @NotNull
     @Transactional
-    public AuthorResponseDTO unassignBook(@NotNull Integer authorId, @NotNull Integer bookId) {
+    public UserResponseDTO assignBook(@NotNull Integer userId, @NotNull Integer bookId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new RuntimeException("Book not found"));
-        Author author = authorRepository.findById(authorId)
-                .orElseThrow(() -> new RuntimeException("Author not found"));
+
+        user.getBooks().add(book);
+        userRepository.save(user);
+
+        book.getUsers().add(user);
+
+        return userMapper.toUserResponse(user);
+    }
+
+    @NotNull
+    @Transactional
+    public UserResponseDTO unassignBook(@NotNull Integer userId, @NotNull Integer bookId) {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new RuntimeException("Book not found"));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.getBooks().remove(book);
+
         book.setAuthor(null);
         bookRepository.save(book);
-        author.removeBook(book);
-        return authorMapper.toAuthorResponse(author);
+
+        book.getUsers().remove(user);
+        return userMapper.toUserResponse(user);
     }
 }

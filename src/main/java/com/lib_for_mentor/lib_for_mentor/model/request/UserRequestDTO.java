@@ -1,6 +1,5 @@
 package com.lib_for_mentor.lib_for_mentor.model.request;
 
-import com.lib_for_mentor.lib_for_mentor.model.response.BookResponseDTO;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -14,5 +13,5 @@ public class UserRequestDTO {
     private String firstName;
     private String lastName;
     private String email;
-    private List<BookRequestDTO> books;
+    private List<Integer> booksId;
 }

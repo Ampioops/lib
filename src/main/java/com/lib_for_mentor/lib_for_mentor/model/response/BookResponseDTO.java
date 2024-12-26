@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.util.List;
+
 @Data //get, set, toString, equals, hashCode
 @Accessors(chain = true)
 @Builder
@@ -16,4 +18,5 @@ public class BookResponseDTO {
     private Integer authorId;
     private Integer genreId;
     private Integer publisherId;
+    private List<Integer> userIds;
 }
