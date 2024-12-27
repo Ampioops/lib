@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 
 public interface BookService {
 
+
     @NotNull
     BookResponseDTO create(@NotNull BookRequestDTO request);
 

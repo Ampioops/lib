@@ -2,6 +2,7 @@ package com.lib_for_mentor.lib_for_mentor.controller;
 
 import com.lib_for_mentor.lib_for_mentor.model.param.UserParamsDTO;
 import com.lib_for_mentor.lib_for_mentor.model.request.UserRequestDTO;
+import com.lib_for_mentor.lib_for_mentor.model.response.BookResponseDTO;
 import com.lib_for_mentor.lib_for_mentor.model.response.UserResponseDTO;
 import com.lib_for_mentor.lib_for_mentor.service.UserService;
 import jakarta.validation.constraints.Max;
@@ -54,8 +55,16 @@ public class UserController {
         return userService.getUsers(params, offset, limit);
     }
 
-    @GetMapping(value = "/{authorId}", produces = APPLICATION_JSON_VALUE)
-    public UserResponseDTO getAuthorById(@PathVariable @NotNull Integer authorId) {
-        return userService.findById(authorId);
+    @GetMapping(value = "/books/{userId}", produces = APPLICATION_JSON_VALUE)
+    public Page<BookResponseDTO> getUserBooks(
+            @RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
+            @RequestParam(value = "limit", defaultValue = "10") @Min(1) @Max(100) Integer limit,
+            @PathVariable Integer userId) {
+        return userService.getUserBooks(userId, offset, limit);
+    }
+
+    @GetMapping(value = "/{userId}", produces = APPLICATION_JSON_VALUE)
+    public UserResponseDTO getUserById(@PathVariable @NotNull Integer userId) {
+        return userService.findById(userId);
     }
 }

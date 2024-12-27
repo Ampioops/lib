@@ -2,11 +2,15 @@ package com.lib_for_mentor.lib_for_mentor.service;
 
 import com.lib_for_mentor.lib_for_mentor.model.param.UserParamsDTO;
 import com.lib_for_mentor.lib_for_mentor.model.request.UserRequestDTO;
+import com.lib_for_mentor.lib_for_mentor.model.response.BookResponseDTO;
 import com.lib_for_mentor.lib_for_mentor.model.response.UserResponseDTO;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 
 public interface UserService {
+    @NotNull
+    Page<BookResponseDTO> getUserBooks(Integer userId, Integer offset, Integer limit);
+
     @NotNull
     UserResponseDTO create(@NotNull UserRequestDTO request);
 

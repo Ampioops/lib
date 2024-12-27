@@ -31,6 +31,14 @@ public interface BookMapper {
     BookResponseDTO toBookResponse(Book book);
 
     @Mappings({
+            @Mapping(target = "authorId", source = "author.id"),
+            @Mapping(target = "genreId", source = "genre.id"),
+            @Mapping(target = "publisherId", source = "publisher.id"),
+            @Mapping(target = "userIds", source = "users")
+    })
+    List<BookResponseDTO> toBookResponses(List<Book> books);
+
+    @Mappings({
             @Mapping(target = "author", ignore = true),
             @Mapping(target = "genre", ignore = true),
             @Mapping(target = "publisher", ignore = true),

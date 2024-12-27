@@ -6,6 +6,7 @@ import com.lib_for_mentor.lib_for_mentor.mapper.BookMapper;
 import com.lib_for_mentor.lib_for_mentor.mapper.UserMapper;
 import com.lib_for_mentor.lib_for_mentor.model.param.UserParamsDTO;
 import com.lib_for_mentor.lib_for_mentor.model.request.UserRequestDTO;
+import com.lib_for_mentor.lib_for_mentor.model.response.BookResponseDTO;
 import com.lib_for_mentor.lib_for_mentor.model.response.UserResponseDTO;
 import com.lib_for_mentor.lib_for_mentor.repository.BookRepository;
 import com.lib_for_mentor.lib_for_mentor.repository.UserRepository;
@@ -34,14 +35,19 @@ public class UserServiceImpl implements UserService {
     @NotNull
     @Transactional
     public UserResponseDTO create(@NotNull UserRequestDTO request) {
-        List<Book> books =  bookRepository.findAllById(request.getBooksId());
+        List<Book> books;
         User user = User.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .email(request.getEmail())
                 .build();
 
-        // Установка связи "книга -> пользователь"
+        List<Integer> bookIds = request.getBooksId();
+        if(bookIds != null && !bookIds.isEmpty()) {
+            books =  bookRepository.findAllById(request.getBooksId());
+        }else {
+            books = null;
+        }
         user.setBooks(books);
         userRepository.save(user);
 
@@ -74,6 +80,17 @@ public class UserServiceImpl implements UserService {
         PageRequest pageRequest = PageRequest.of(offset, limit);
         return userRepository.findAll(userSpecification.build(params), pageRequest)
                 .map(userMapper::toUserResponse);
+    }
+
+    @NotNull
+    @Transactional(readOnly = true)
+    public Page<BookResponseDTO> getUserBooks(Integer userId, Integer offset, Integer limit) {
+        PageRequest pageRequest = PageRequest.of(offset, limit);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Page<Book> booksPage = bookRepository.findByUsersId(userId, pageRequest);
+
+        return booksPage.map(bookMapper::toBookResponse);
     }
 
     @NotNull

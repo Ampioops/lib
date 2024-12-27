@@ -38,8 +38,9 @@ public class UserSpecification {
 
     private Specification<User> hasBookId(Integer bookId) {
         return (root, query, criteriaBuilder) -> {
-            // Получаем связь ManyToMany между User и Book
-            return criteriaBuilder.isMember(bookId, root.get("books").get("id"));
+            Join<Object, Object> booksJoin = root.join("books");
+            // Проверяем условие, что ID книги совпадает с переданным bookId
+            return criteriaBuilder.equal(booksJoin.get("id"), bookId);
         };
     }
 }
