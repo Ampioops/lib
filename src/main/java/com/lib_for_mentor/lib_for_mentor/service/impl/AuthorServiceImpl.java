@@ -2,6 +2,9 @@ package com.lib_for_mentor.lib_for_mentor.service.impl;
 
 import com.lib_for_mentor.lib_for_mentor.entity.Author;
 import com.lib_for_mentor.lib_for_mentor.entity.Book;
+import com.lib_for_mentor.lib_for_mentor.exception.AuthorNotFoundException;
+import com.lib_for_mentor.lib_for_mentor.exception.BadRequestException;
+import com.lib_for_mentor.lib_for_mentor.exception.BookNotFoundException;
 import com.lib_for_mentor.lib_for_mentor.mapper.AuthorMapper;
 import com.lib_for_mentor.lib_for_mentor.mapper.BookMapper;
 import com.lib_for_mentor.lib_for_mentor.model.request.AuthorRequestDTO;
@@ -13,6 +16,7 @@ import com.lib_for_mentor.lib_for_mentor.repository.BookRepository;
 import com.lib_for_mentor.lib_for_mentor.service.AuthorService;
 import com.lib_for_mentor.lib_for_mentor.service.BookService;
 import com.lib_for_mentor.lib_for_mentor.specification.AuthorSpecification;
+import jakarta.validation.ValidationException;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,9 +40,14 @@ public class AuthorServiceImpl implements AuthorService {
     @NotNull
     @Transactional
     public AuthorResponseDTO create(@NotNull CreateAuthorRequestDTO request) {
+
+        if(request.getLastName() == null || request.getFirstName() == null) {
+            throw new BadRequestException("Invalid Author data");
+        }
+
         List<Book> books = request.getBooks().stream()
                 .map(bookMapper::bookRequestDTOToBook)
-                .peek(book -> book.setAuthor(null)) // Не изменяет элемент стрима
+                .peek(book -> book.setAuthor(null)) //Не изменяет элемент стрима
                 .toList();
 
         Author author = Author.builder()
@@ -57,8 +66,13 @@ public class AuthorServiceImpl implements AuthorService {
     @NotNull
     @Transactional
     public AuthorResponseDTO updateAuthorInfo(@NotNull Integer id, @NotNull AuthorRequestDTO request) {
+        if(request.getLastName() == null || request.getFirstName() == null) {
+            throw new BadRequestException("Invalid data for Author new info");
+        }
+
         Author author = authorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Author not found"));
+                .orElseThrow(() -> new AuthorNotFoundException("Author with "+ id +" not found"));
+
         author.setFirstName(request.getFirstName());
         author.setLastName(request.getLastName());
         authorRepository.save(author);
@@ -69,7 +83,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional
     public void deleteById(@NotNull Integer id) {
         Author author = authorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Author not found"));
+                .orElseThrow(() -> new AuthorNotFoundException("Author not found"));
         authorRepository.delete(author);
     }
 
@@ -77,6 +91,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional(readOnly = true)
     public Page<AuthorResponseDTO> getAuthors(AuthorParamsDTO params, Integer offset, Integer limit) {
         PageRequest pageRequest = PageRequest.of(offset, limit);
+//        Page<Author> authors = authorRepository.findAll(authorSpecification.build(params), pageRequest); //Нужно ли обрабатывать пустоту в репе?
         return authorRepository.findAll(authorSpecification.build(params), pageRequest)
                 .map(authorMapper::toAuthorResponse);
     }
@@ -84,7 +99,7 @@ public class AuthorServiceImpl implements AuthorService {
     @NotNull
     public AuthorResponseDTO findById(@NotNull Integer id) {
         Author author = authorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Author not found"));
+                .orElseThrow(() -> new AuthorNotFoundException("Author not found"));
         return authorMapper.toAuthorResponse(author);
     }
 
@@ -92,9 +107,9 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional
     public AuthorResponseDTO assignBook(@NotNull Integer authorId, @NotNull Integer bookId) {
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new RuntimeException("Book not found"));
+                .orElseThrow(() -> new BookNotFoundException("Book not found"));
         Author author = authorRepository.findById(authorId)
-                .orElseThrow(() -> new RuntimeException("Author not found"));
+                .orElseThrow(() -> new AuthorNotFoundException("Author not found"));
         book.setAuthor(author);
         bookRepository.save(book);
         author.addBook(book);
@@ -105,9 +120,9 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional
     public AuthorResponseDTO unassignBook(@NotNull Integer authorId, @NotNull Integer bookId) {
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new RuntimeException("Book not found"));
+                .orElseThrow(() -> new BookNotFoundException("Book not found"));
         Author author = authorRepository.findById(authorId)
-                .orElseThrow(() -> new RuntimeException("Author not found"));
+                .orElseThrow(() -> new AuthorNotFoundException("Author not found"));
         book.setAuthor(null);
         bookRepository.save(book);
         author.removeBook(book);
