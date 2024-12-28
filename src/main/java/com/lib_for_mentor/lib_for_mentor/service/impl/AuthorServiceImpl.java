@@ -83,7 +83,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional
     public void deleteById(@NotNull Integer id) {
         Author author = authorRepository.findById(id)
-                .orElseThrow(() -> new AuthorNotFoundException("Author not found"));
+                .orElseThrow(() -> new AuthorNotFoundException("Author with "+ id +" not found"));
         authorRepository.delete(author);
     }
 
@@ -99,7 +99,7 @@ public class AuthorServiceImpl implements AuthorService {
     @NotNull
     public AuthorResponseDTO findById(@NotNull Integer id) {
         Author author = authorRepository.findById(id)
-                .orElseThrow(() -> new AuthorNotFoundException("Author not found"));
+                .orElseThrow(() -> new AuthorNotFoundException("Author with "+ id +" not found"));
         return authorMapper.toAuthorResponse(author);
     }
 
@@ -107,9 +107,9 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional
     public AuthorResponseDTO assignBook(@NotNull Integer authorId, @NotNull Integer bookId) {
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new BookNotFoundException("Book not found"));
+                .orElseThrow(() -> new BookNotFoundException("Book with "+ bookId +" not found"));
         Author author = authorRepository.findById(authorId)
-                .orElseThrow(() -> new AuthorNotFoundException("Author not found"));
+                .orElseThrow(() -> new AuthorNotFoundException("Author with "+ authorId +" not found"));
         book.setAuthor(author);
         bookRepository.save(book);
         author.addBook(book);
@@ -120,9 +120,9 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional
     public AuthorResponseDTO unassignBook(@NotNull Integer authorId, @NotNull Integer bookId) {
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new BookNotFoundException("Book not found"));
+                .orElseThrow(() -> new BookNotFoundException("Book with "+ bookId +" not found"));
         Author author = authorRepository.findById(authorId)
-                .orElseThrow(() -> new AuthorNotFoundException("Author not found"));
+                .orElseThrow(() -> new AuthorNotFoundException("Author with "+ authorId +" not found"));
         book.setAuthor(null);
         bookRepository.save(book);
         author.removeBook(book);
