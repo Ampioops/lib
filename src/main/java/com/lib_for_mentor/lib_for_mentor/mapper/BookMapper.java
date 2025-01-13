@@ -48,4 +48,13 @@ public interface BookMapper {
     })
     Book bookRequestDTOToBook(BookRequestDTO bookRequestDTO);
 
+//    @Named("authorForBookResponse")
+//    @Mappings({
+//            @Mapping(target = "id", source = "id"),
+//            @Mapping(target = "firstName", source = "firstName"),
+//            @Mapping(target = "lastName", source = "lastName"),
+//            @Mapping(target = "books", ignore = true)
+//    })
+//    AuthorResponseDTO toAuthorResponse(Author author);
+
 }
