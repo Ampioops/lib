@@ -1,5 +1,6 @@
 package com.lib_for_mentor.lib_for_mentor.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,5 +33,6 @@ public class User {
     @JoinTable(name = "user_books",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "book_id"))
+    @JsonManagedReference
     private List<Book> books;
 }

@@ -1,5 +1,6 @@
 package com.lib_for_mentor.lib_for_mentor.model.response;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -13,5 +14,6 @@ public class AuthorResponseDTO {
     private Integer id;
     private String firstName;
     private String lastName;
+    @JsonBackReference
     private List<BookResponseDTO> books;
 }

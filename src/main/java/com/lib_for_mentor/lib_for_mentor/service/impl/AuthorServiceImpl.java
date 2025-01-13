@@ -2,6 +2,8 @@ package com.lib_for_mentor.lib_for_mentor.service.impl;
 
 import com.lib_for_mentor.lib_for_mentor.entity.Author;
 import com.lib_for_mentor.lib_for_mentor.entity.Book;
+import com.lib_for_mentor.lib_for_mentor.entity.Genre;
+import com.lib_for_mentor.lib_for_mentor.entity.Publisher;
 import com.lib_for_mentor.lib_for_mentor.exception.AuthorNotFoundException;
 import com.lib_for_mentor.lib_for_mentor.exception.BadRequestException;
 import com.lib_for_mentor.lib_for_mentor.exception.BookNotFoundException;
@@ -13,6 +15,8 @@ import com.lib_for_mentor.lib_for_mentor.model.param.AuthorParamsDTO;
 import com.lib_for_mentor.lib_for_mentor.model.response.AuthorResponseDTO;
 import com.lib_for_mentor.lib_for_mentor.repository.AuthorRepository;
 import com.lib_for_mentor.lib_for_mentor.repository.BookRepository;
+import com.lib_for_mentor.lib_for_mentor.repository.GenreRepository;
+import com.lib_for_mentor.lib_for_mentor.repository.PublisherRepository;
 import com.lib_for_mentor.lib_for_mentor.service.AuthorService;
 import com.lib_for_mentor.lib_for_mentor.service.BookService;
 import com.lib_for_mentor.lib_for_mentor.specification.AuthorSpecification;
@@ -31,6 +35,8 @@ import java.util.List;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AuthorServiceImpl implements AuthorService {
 
+    private final GenreRepository genreRepository;
+    private final PublisherRepository publisherRepository;
     private final AuthorRepository authorRepository;
     private final AuthorMapper authorMapper;
     private final AuthorSpecification authorSpecification;
@@ -46,8 +52,23 @@ public class AuthorServiceImpl implements AuthorService {
         }
 
         List<Book> books = request.getBooks().stream()
-                .map(bookMapper::bookRequestDTOToBook)
-                .peek(book -> book.setAuthor(null)) //Не изменяет элемент стрима
+                .map(bookRequestDTO -> {
+                    // Загружаем жанр и издательство из базы данных
+                    Genre genre = genreRepository.findById(bookRequestDTO.getGenreId())
+                            .orElseThrow(() -> new BadRequestException("Invalid Genre ID: " + bookRequestDTO.getGenreId()));
+
+                    Publisher publisher = publisherRepository.findById(bookRequestDTO.getPublisherId())
+                            .orElseThrow(() -> new BadRequestException("Invalid Publisher ID: " + bookRequestDTO.getPublisherId()));
+
+                    // Создаём сущность книги
+                    Book book = bookMapper.bookRequestDTOToBook(bookRequestDTO);
+
+                    // Устанавливаем жанр и издательство
+                    book.setGenre(genre);
+                    book.setPublisher(publisher);
+
+                    return book;
+                })
                 .toList();
 
         Author author = Author.builder()

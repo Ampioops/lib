@@ -1,8 +1,10 @@
 package com.lib_for_mentor.lib_for_mentor.mapper;
 
+import com.lib_for_mentor.lib_for_mentor.entity.Author;
 import com.lib_for_mentor.lib_for_mentor.entity.Book;
 import com.lib_for_mentor.lib_for_mentor.entity.User;
 import com.lib_for_mentor.lib_for_mentor.model.request.BookRequestDTO;
+import com.lib_for_mentor.lib_for_mentor.model.response.AuthorResponseDTO;
 import com.lib_for_mentor.lib_for_mentor.model.response.BookResponseDTO;
 import com.lib_for_mentor.lib_for_mentor.repository.AuthorRepository;
 import org.mapstruct.*;
@@ -23,10 +25,10 @@ public interface BookMapper {
     }
 
     @Mappings({
-            @Mapping(target = "authorId", source = "author.id"),
-            @Mapping(target = "genreId", source = "genre.id"),
-            @Mapping(target = "publisherId", source = "publisher.id"),
-            @Mapping(target = "userIds", source = "users")
+            @Mapping(target = "author", source = "author"),
+            @Mapping(target = "genre", source = "genre"),
+            @Mapping(target = "publisher", source = "publisher"),
+            @Mapping(target = "users", source = "users")
     })
     BookResponseDTO toBookResponse(Book book);
 

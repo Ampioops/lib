@@ -1,5 +1,6 @@
 package com.lib_for_mentor.lib_for_mentor.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,6 +25,7 @@ public class Author {
     private String lastName;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonBackReference
     private List<Book> books = new ArrayList<>();
 
     public void addBook(Book book) {

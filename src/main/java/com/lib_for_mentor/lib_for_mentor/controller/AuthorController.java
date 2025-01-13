@@ -5,7 +5,6 @@ import com.lib_for_mentor.lib_for_mentor.model.request.AuthorRequestDTO;
 import com.lib_for_mentor.lib_for_mentor.model.request.CreateAuthorRequestDTO;
 import com.lib_for_mentor.lib_for_mentor.model.response.AuthorResponseDTO;
 import com.lib_for_mentor.lib_for_mentor.service.AuthorService;
-import com.lib_for_mentor.lib_for_mentor.service.impl.AuthorServiceImpl;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
