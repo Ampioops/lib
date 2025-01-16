@@ -33,21 +33,17 @@ public class Book {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id", nullable = false)
-    @JsonManagedReference
     private Author author;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "genre_id", nullable = false)
-    @JsonManagedReference
     private Genre genre;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "publisher_id", nullable = false)
-    @JsonManagedReference
     private Publisher publisher;
 
     @ManyToMany(mappedBy = "books", fetch = FetchType.LAZY)
-    @JsonBackReference
     private List<User> users;
 
 }

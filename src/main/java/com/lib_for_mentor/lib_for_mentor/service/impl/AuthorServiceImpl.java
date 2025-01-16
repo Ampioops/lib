@@ -112,7 +112,6 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional(readOnly = true)
     public Page<AuthorResponseDTO> getAuthors(AuthorParamsDTO params, Integer offset, Integer limit) {
         PageRequest pageRequest = PageRequest.of(offset, limit);
-//        Page<Author> authors = authorRepository.findAll(authorSpecification.build(params), pageRequest); //Нужно ли обрабатывать пустоту в репе?
         return authorRepository.findAll(authorSpecification.build(params), pageRequest)
                 .map(authorMapper::toAuthorResponse);
     }

@@ -23,7 +23,6 @@ public class Genre {
     private String name;
 
     @OneToMany(mappedBy = "genre", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JsonBackReference
     private List<Book> books = new ArrayList<>();
 
     public void addBook(Book book) {

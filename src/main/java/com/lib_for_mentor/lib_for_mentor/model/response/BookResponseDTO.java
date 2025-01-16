@@ -17,12 +17,8 @@ public class BookResponseDTO {
     private Integer publishedYear;
     private Integer pages;
     private String description;
-    @JsonManagedReference
     private AuthorResponseDTO author;
-    @JsonManagedReference
     private GenreResponseDTO genre;
-    @JsonManagedReference
     private PublisherResponseDTO publisher;
-    @JsonBackReference
     private List<UserResponseDTO> users;
 }

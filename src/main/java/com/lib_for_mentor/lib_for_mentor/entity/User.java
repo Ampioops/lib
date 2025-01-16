@@ -33,6 +33,5 @@ public class User {
     @JoinTable(name = "user_books",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "book_id"))
-    @JsonManagedReference
     private List<Book> books;
 }

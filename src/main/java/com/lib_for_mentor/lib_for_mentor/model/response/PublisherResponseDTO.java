@@ -13,6 +13,5 @@ import java.util.List;
 public class PublisherResponseDTO {
     private Integer id;
     private String name;
-    @JsonBackReference
     private List<BookResponseDTO> books;
 }

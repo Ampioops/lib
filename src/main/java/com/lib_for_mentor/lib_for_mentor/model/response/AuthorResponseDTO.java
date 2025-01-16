@@ -14,6 +14,5 @@ public class AuthorResponseDTO {
     private Integer id;
     private String firstName;
     private String lastName;
-    @JsonBackReference
     private List<BookResponseDTO> books;
 }
