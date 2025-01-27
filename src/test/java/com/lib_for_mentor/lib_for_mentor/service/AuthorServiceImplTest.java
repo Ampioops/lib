@@ -4,9 +4,11 @@ import com.lib_for_mentor.lib_for_mentor.entity.Author;
 import com.lib_for_mentor.lib_for_mentor.entity.Book;
 import com.lib_for_mentor.lib_for_mentor.entity.Genre;
 import com.lib_for_mentor.lib_for_mentor.entity.Publisher;
+import com.lib_for_mentor.lib_for_mentor.exception.AuthorNotFoundException;
 import com.lib_for_mentor.lib_for_mentor.exception.BadRequestException;
 import com.lib_for_mentor.lib_for_mentor.mapper.AuthorMapper;
 import com.lib_for_mentor.lib_for_mentor.mapper.BookMapper;
+import com.lib_for_mentor.lib_for_mentor.model.param.AuthorParamsDTO;
 import com.lib_for_mentor.lib_for_mentor.model.request.*;
 import com.lib_for_mentor.lib_for_mentor.model.response.AuthorResponseDTO;
 import com.lib_for_mentor.lib_for_mentor.repository.AuthorRepository;
@@ -21,6 +23,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.Collections;
 import java.util.List;
@@ -61,7 +67,7 @@ public class AuthorServiceImplTest {
     }
 
     @Test
-    void createAuthorMissingLastNameShouldThrowBadRequestException() {
+    void createAuthorMissingLastName_ShouldThrowBadRequestException() {
         CreateAuthorRequestDTO request = CreateAuthorRequestDTO.builder()
                 .firstName("firstName")
                 .lastName(null)
@@ -71,7 +77,7 @@ public class AuthorServiceImplTest {
         assertThrows(BadRequestException.class, () -> authorService.create(request));
     }
     @Test
-    void createAuthorMissingFirstNameShouldThrowBadRequestException() {
+    void createAuthorMissingFirstName_ShouldThrowBadRequestException() {
         CreateAuthorRequestDTO request = CreateAuthorRequestDTO.builder()
                 .firstName(null)
                 .lastName("lastName")
@@ -82,7 +88,7 @@ public class AuthorServiceImplTest {
     }
 
     @Test
-    void shouldThrowBadRequestExceptionWhenGenreIdIsInvalid() {
+    void createAuthorWhenGenreNotFound_ShouldThrowBadRequestException() {
         // Arrange
         CreateAuthorRequestDTO request = CreateAuthorRequestDTO.builder()
                 .firstName("firstName")
@@ -91,7 +97,7 @@ public class AuthorServiceImplTest {
                         .build()))
                 .build();
 
-        Mockito.when(genreRepository.findById(request.getBooks().getFirst().getGenreId()))
+        when(genreRepository.findById(request.getBooks().getFirst().getGenreId()))
                 .thenReturn(Optional.empty()); // Возвращаем пустой результат
 
         // Act & Assert
@@ -101,7 +107,7 @@ public class AuthorServiceImplTest {
     }
 
     @Test
-    void shouldThrowBadRequestExceptionWhenPublisherIdIsInvalid() {
+    void createAuthorWhenPublisherNotFound_ShouldThrowBadRequestException() {
         // Arrange
         CreateAuthorRequestDTO request = CreateAuthorRequestDTO.builder()
                 .firstName("firstName")
@@ -111,9 +117,9 @@ public class AuthorServiceImplTest {
                         .build()))
                 .build();
 
-        Mockito.when(genreRepository.findById(request.getBooks().getFirst().getGenreId()))
+        when(genreRepository.findById(request.getBooks().getFirst().getGenreId()))
                 .thenReturn(Optional.of(new Genre())); // Возвращаем пустой результат
-        Mockito.when(publisherRepository.findById(request.getBooks().getFirst().getPublisherId()))
+        when(publisherRepository.findById(request.getBooks().getFirst().getPublisherId()))
                 .thenReturn(Optional.empty());
 
         // Act & Assert
@@ -124,7 +130,7 @@ public class AuthorServiceImplTest {
     }
 
     @Test
-    void createAuthorValidDataShouldReturnAuthorResponse() {
+    void createAuthorValidData_ShouldReturnAuthorResponse() {
         // Arrange: Создаём моковые данные для запроса
         BookRequestDTO bookRequest = BookRequestDTO.builder()
                 .title("title")
@@ -138,12 +144,14 @@ public class AuthorServiceImplTest {
                 .books(List.of(bookRequest))
                 .build();
 
+        Integer genreId = 3;
         Genre genre = new Genre();
-        genre.setId(3);
+        genre.setId(genreId);
         genre.setName("Test Genre");
 
+        Integer publisherId = 3;
         Publisher publisher = new Publisher();
-        publisher.setId(3);
+        publisher.setId(publisherId);
         publisher.setName("Test Publisher");
 
         Book book = new Book();
@@ -161,8 +169,8 @@ public class AuthorServiceImplTest {
                 .build();
 
         // Настройка поведения моков
-        when(genreRepository.findById(3)).thenReturn(Optional.of(genre));
-        when(publisherRepository.findById(3)).thenReturn(Optional.of(publisher));
+        when(genreRepository.findById(genreId)).thenReturn(Optional.of(genre));
+        when(publisherRepository.findById(publisherId)).thenReturn(Optional.of(publisher));
         when(bookMapper.bookRequestDTOToBook(bookRequest)).thenReturn(book);
         when(authorRepository.save(any(Author.class))).thenReturn(author);
         when(authorMapper.toAuthorResponse(any(Author.class))).thenReturn(response);
@@ -174,6 +182,7 @@ public class AuthorServiceImplTest {
         assertNotNull(result);
         assertEquals("John", result.getFirstName());
         assertEquals("Doe", result.getLastName());
+        assertEquals(3, result.getBooks().size());
 
         // Проверяем, что моки вызвались с правильными параметрами
         verify(genreRepository).findById(3);
@@ -181,5 +190,149 @@ public class AuthorServiceImplTest {
         verify(authorRepository).save(any(Author.class));
     }
 
- }
+    @Test
+    void updateAuthorValidData_ShouldReturnUpdatedAuthorResponse() {
+        // Arrange
+        AuthorRequestDTO request = AuthorRequestDTO.builder()
+                .firstName("firstName")
+                .lastName("lastName")
+                .build();
+        Integer authorId = 1;
+        Author author = Author.builder()
+                .id(authorId)
+                .firstName("John")
+                .lastName("Doe")
+                .books(Collections.emptyList())
+                .build();
+        AuthorResponseDTO expected = AuthorResponseDTO.builder()
+                .id(authorId)
+                .firstName("firstName")
+                .lastName("lastName")
+                .books(Collections.emptyList())
+                .build();
+
+        // Настройка поведения моков
+        when(authorRepository.findById(authorId)).thenReturn(Optional.of(author));
+        when(authorMapper.toAuthorResponse(any(Author.class))).thenReturn(expected);
+
+        // Act & Assert
+        AuthorResponseDTO result = authorService.updateAuthorInfo(authorId, request);
+        assertEquals(expected, result);
+
+        verify(authorRepository, times(1)).save(any(Author.class));
+        verify(authorRepository).findById(authorId);
+        verify(authorRepository).save(any(Author.class));
+        verifyNoMoreInteractions(authorRepository);
+    }
+
+    @Test
+    void deleteAuthorInvalidData_ShouldThrowAuthorNotFoundException() {
+        Integer authorId = 1;
+        Author author = Author.builder()
+                .id(authorId)
+                .build();
+
+        assertThrows(AuthorNotFoundException.class, () -> authorService.deleteById(author.getId()));
+    }
+
+    @Test
+    void deleteAuthorValidData_ShouldDeleteAuthorSuccessfully() {
+        Integer authorId = 1;
+        Author author = Author.builder()
+                .id(authorId)
+                .build();
+
+        when(authorRepository.findById(authorId)).thenReturn(Optional.of(author));
+
+        authorService.deleteById(authorId);
+
+        verify(authorRepository, times(1)).findById(authorId);
+        verify(authorRepository, times(1)).delete(author);
+        verifyNoInteractions(authorRepository);
+    }
+
+    @Test
+    void getAuthorsValidData_ShouldReturnPaginatedAuthorResponse() {
+        AuthorParamsDTO params = new AuthorParamsDTO(); // Добавьте необходимые параметры
+        PageRequest pageRequest = PageRequest.of(0, 5);
+
+        Author author1 = Author.builder()
+                .id(1)
+                .firstName("John")
+                .lastName("Doe")
+                .build();
+
+        Author author2 = Author.builder()
+                .id(2)
+                .firstName("Jane")
+                .lastName("Smith")
+                .build();
+
+        AuthorResponseDTO expectedAuthor1 = AuthorResponseDTO.builder()
+                .id(1)
+                .firstName("John")
+                .lastName("Doe")
+                .build();
+
+        AuthorResponseDTO expectedAuthor2 = AuthorResponseDTO.builder()
+                .id(2)
+                .firstName("Jane")
+                .lastName("Smith")
+                .build();
+        Page<Author> authors = new PageImpl<>(List.of(author1, author2), pageRequest, 2);
+        Page<AuthorResponseDTO> expectedAuthors = new PageImpl<>(List.of(expectedAuthor1, expectedAuthor2), pageRequest, 2);
+        Specification<Author> spec = (root, query, criteriaBuilder) -> criteriaBuilder.conjunction();
+
+
+        when(authorSpecification.build(params)).thenReturn(spec);
+        when(authorRepository.findAll(eq(spec), eq(pageRequest))).thenReturn(authors);
+        when(authorMapper.toAuthorResponse(author1)).thenReturn(expectedAuthor1);
+        when(authorMapper.toAuthorResponse(author2)).thenReturn(expectedAuthor2);
+
+        Page<AuthorResponseDTO> result = authorService.getAuthors(params,0,5);
+
+        assertEquals(expectedAuthors, result);
+        verify(authorSpecification, times(1)).build(params);
+        verify(authorRepository, times(1)).findAll(eq(spec), eq(pageRequest));
+        verify(authorMapper, times(1)).toAuthorResponse(author1);
+        verify(authorMapper, times(1)).toAuthorResponse(author2);
+        verifyNoMoreInteractions(authorRepository, authorMapper);
+    }
+
+    @Test
+    void findAuthorByIdValidData_ShouldReturnAuthorResponse() {
+        Integer authorId = 1;
+        Author author = Author.builder()
+                .id(authorId)
+                .firstName("John")
+                .lastName("Doe")
+                .build();
+
+        AuthorResponseDTO expectedAuthor = AuthorResponseDTO.builder()
+                .id(authorId)
+                .firstName("John")
+                .lastName("Doe")
+                .build();
+
+        when(authorRepository.findById(authorId)).thenReturn(Optional.of(author));
+        when(authorMapper.toAuthorResponse(author)).thenReturn(expectedAuthor);
+
+        AuthorResponseDTO result = authorService.findById(authorId);
+
+        assertEquals(expectedAuthor, result);
+        verify(authorRepository, times(1)).findById(authorId);
+        verify(authorMapper, times(1)).toAuthorResponse(author);
+        verifyNoMoreInteractions(authorRepository, authorMapper);
+    }
+
+    @Test
+    void findAuthorByIdInValidData_ShouldThrowAuthorNotFoundException() {
+        Integer invalidAuthorId = 2;
+
+        when(authorRepository.findById(invalidAuthorId)).thenReturn(Optional.empty());
+
+        assertThrows(AuthorNotFoundException.class, () -> authorService.findById(invalidAuthorId));
+    }
+
+}
 
