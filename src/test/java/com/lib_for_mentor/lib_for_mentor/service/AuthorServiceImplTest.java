@@ -6,11 +6,13 @@ import com.lib_for_mentor.lib_for_mentor.entity.Genre;
 import com.lib_for_mentor.lib_for_mentor.entity.Publisher;
 import com.lib_for_mentor.lib_for_mentor.exception.AuthorNotFoundException;
 import com.lib_for_mentor.lib_for_mentor.exception.BadRequestException;
+import com.lib_for_mentor.lib_for_mentor.exception.BookNotFoundException;
 import com.lib_for_mentor.lib_for_mentor.mapper.AuthorMapper;
 import com.lib_for_mentor.lib_for_mentor.mapper.BookMapper;
 import com.lib_for_mentor.lib_for_mentor.model.param.AuthorParamsDTO;
 import com.lib_for_mentor.lib_for_mentor.model.request.*;
 import com.lib_for_mentor.lib_for_mentor.model.response.AuthorResponseDTO;
+import com.lib_for_mentor.lib_for_mentor.model.response.BookResponseDTO;
 import com.lib_for_mentor.lib_for_mentor.repository.AuthorRepository;
 import com.lib_for_mentor.lib_for_mentor.repository.BookRepository;
 import com.lib_for_mentor.lib_for_mentor.repository.GenreRepository;
@@ -28,6 +30,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -326,12 +329,128 @@ public class AuthorServiceImplTest {
     }
 
     @Test
-    void findAuthorByIdInValidData_ShouldThrowAuthorNotFoundException() {
+    void findAuthorByIdInvalidData_ShouldThrowAuthorNotFoundException() {
         Integer invalidAuthorId = 2;
-
-        when(authorRepository.findById(invalidAuthorId)).thenReturn(Optional.empty());
-
         assertThrows(AuthorNotFoundException.class, () -> authorService.findById(invalidAuthorId));
+    }
+
+    @Test
+    void assignBookInvalidBookId_ShouldThrowBookNotFoundException() {
+        Integer bookId = 1;
+        Integer authorId = 2;
+        assertThrows(BookNotFoundException.class, () -> authorService.assignBook(authorId, bookId));
+    }
+
+    @Test
+    void assignBookInvalidAuthorId_ShouldThrowAuthorNotFoundException() {
+        Integer bookId = 1;
+        Book book = Book.builder()
+                .id(bookId)
+                .build();
+        Integer authorId = 1;
+        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
+
+        assertThrows(AuthorNotFoundException.class, () -> authorService.assignBook(authorId, bookId));
+    }
+
+    @Test
+    void assignBookValidData_ShouldAssignBookSuccessfully() {
+        Integer bookId = 1;
+        Book book = Book.builder()
+                .id(bookId)
+                .build();
+
+        BookResponseDTO expectedBook = BookResponseDTO.builder()
+                .id(bookId)
+                .build();
+
+        Integer authorId = 1;
+        Author author = Author.builder()
+                .id(authorId)
+                .firstName("John")
+                .lastName("Doe")
+                .books(new ArrayList<>())
+                .build();
+
+        AuthorResponseDTO expectedAuthor = AuthorResponseDTO.builder()
+                .id(authorId)
+                .firstName("John")
+                .lastName("Doe")
+                .books(List.of(expectedBook))
+                .build();
+
+        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
+        when(authorRepository.findById(authorId)).thenReturn(Optional.of(author));
+        when(bookMapper.toBookResponse(book)).thenReturn(expectedBook);
+        when(authorMapper.toAuthorResponse(author)).thenReturn(expectedAuthor);
+
+        AuthorResponseDTO result = authorService.assignBook(authorId, bookId);
+
+        assertEquals(expectedAuthor, result);
+        verify(bookRepository, times(1)).findById(bookId);
+        verify(authorRepository, times(1)).findById(authorId);
+        verify(bookRepository, times(1)).save(any(Book.class));
+    }
+
+    @Test
+    void unassignBookInvalidBookId_ShouldThrowBookNotFoundException() {
+        Integer bookId = 1;
+        Integer authorId = 2;
+        assertThrows(BookNotFoundException.class, () -> authorService.assignBook(authorId, bookId));
+    }
+
+    @Test
+    void unassignBookInvalidAuthorId_ShouldThrowAuthorNotFoundException() {
+        Integer bookId = 1;
+        Book book = Book.builder()
+                .id(bookId)
+                .build();
+        Integer authorId = 1;
+        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
+
+        assertThrows(AuthorNotFoundException.class, () -> authorService.assignBook(authorId, bookId));
+    }
+
+    @Test
+    void unassignBookValidData_ShouldAssignBookSuccessfully() {
+        Integer bookId = 1;
+        Book book = Book.builder()
+                .id(bookId)
+                .build();
+
+        Integer authorId = 1;
+        Author author = Author.builder()
+                .id(authorId)
+                .firstName("John")
+                .lastName("Doe")
+                .build();
+
+        book.setAuthor(author);
+        author.setBooks(new ArrayList<>(List.of(book)));
+
+        BookResponseDTO expectedBook = BookResponseDTO.builder()
+                .id(bookId)
+                .author(null)
+                .build();
+
+        AuthorResponseDTO expectedAuthor = AuthorResponseDTO.builder()
+                .id(authorId)
+                .firstName("John")
+                .lastName("Doe")
+                .books(Collections.emptyList())
+                .build();
+
+        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
+        when(authorRepository.findById(authorId)).thenReturn(Optional.of(author));
+        when(bookMapper.toBookResponse(book)).thenReturn(expectedBook);
+        when(authorMapper.toAuthorResponse(author)).thenReturn(expectedAuthor);
+
+        AuthorResponseDTO result = authorService.assignBook(authorId, bookId);
+
+        assertEquals(expectedAuthor, result);
+        verify(bookRepository, times(1)).findById(bookId);
+        verify(authorRepository, times(1)).findById(authorId);
+        verify(bookRepository, times(1)).save(any(Book.class));
     }
 
 }
