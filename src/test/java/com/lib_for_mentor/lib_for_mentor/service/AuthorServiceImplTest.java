@@ -79,6 +79,7 @@ public class AuthorServiceImplTest {
 
         assertThrows(BadRequestException.class, () -> authorService.create(request));
     }
+
     @Test
     void createAuthorMissingFirstName_ShouldThrowBadRequestException() {
         CreateAuthorRequestDTO request = CreateAuthorRequestDTO.builder()
