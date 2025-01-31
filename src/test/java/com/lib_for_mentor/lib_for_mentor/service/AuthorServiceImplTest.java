@@ -176,7 +176,6 @@ public class AuthorServiceImplTest {
         when(genreRepository.findById(genreId)).thenReturn(Optional.of(genre));
         when(publisherRepository.findById(publisherId)).thenReturn(Optional.of(publisher));
         when(bookMapper.bookRequestDTOToBook(bookRequest)).thenReturn(book);
-        when(authorRepository.save(any(Author.class))).thenReturn(author);
         when(authorMapper.toAuthorResponse(any(Author.class))).thenReturn(response);
 
         // Act: Вызываем тестируемый метод
@@ -184,9 +183,7 @@ public class AuthorServiceImplTest {
 
         // Assert: Проверяем результат
         assertNotNull(result);
-        assertEquals("John", result.getFirstName());
-        assertEquals("Doe", result.getLastName());
-        assertEquals(3, result.getBooks().size());
+        assertEquals(response, result);
 
         // Проверяем, что моки вызвались с правильными параметрами
         verify(genreRepository).findById(3);
@@ -251,9 +248,7 @@ public class AuthorServiceImplTest {
         authorService.deleteById(authorId);
 
         verify(authorRepository, times(1)).findById(authorId);
-        verify(authorRepository, times(1)).delete(author);
-        verifyNoInteractions(authorRepository);
-    }
+        verify(authorRepository, times(1)).delete(author);}
 
     @Test
     void getAuthorsValidData_ShouldReturnPaginatedAuthorResponse() {

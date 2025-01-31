@@ -9,6 +9,7 @@ import com.lib_for_mentor.lib_for_mentor.mapper.AuthorMapper;
 import com.lib_for_mentor.lib_for_mentor.mapper.BookMapper;
 import com.lib_for_mentor.lib_for_mentor.mapper.GenreMapper;
 import com.lib_for_mentor.lib_for_mentor.mapper.PublisherMapper;
+import com.lib_for_mentor.lib_for_mentor.model.param.BookParamsDTO;
 import com.lib_for_mentor.lib_for_mentor.model.request.BookRequestDTO;
 import com.lib_for_mentor.lib_for_mentor.model.request.CreateAuthorRequestDTO;
 import com.lib_for_mentor.lib_for_mentor.model.response.AuthorResponseDTO;
@@ -28,8 +29,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -288,7 +294,7 @@ public class BookServiceImplTest {
     }
 
     @Test
-    void updateBookInvalidPublisher_ShouldThrowRuntimeException() {
+    void updateBookInvalidPublisherId_ShouldThrowRuntimeException() {
         Integer bookId = 1;
         Integer authorId = 1;
         Integer genreId = 1;
@@ -315,6 +321,91 @@ public class BookServiceImplTest {
         when(publisherRepository.findById(publisherId)).thenReturn(Optional.empty());
 
         assertThrows(RuntimeException.class, ()-> bookService.updateInfo(bookId,request));
+    }
+
+    @Test
+    void deleteBookInvalidId_ShouldThrowRuntimeException() {
+        Integer bookId = 1;
+        when(bookRepository.findById(bookId)).thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class, ()->bookService.deleteById(bookId));
+    }
+
+    @Test
+    void deleteBook_ShouldDeleteSuccessfully() {
+        Integer bookId = 1;
+        Book book = Book.builder()
+                .id(bookId)
+                .build();
+        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
+        bookService.deleteById(bookId);
+        verify(bookRepository).delete(book);
+    }
+
+    @Test
+    void getAllBooks_ShouldReturnAllBooks() {
+        int offset = 0;
+        int limit = 3;
+        PageRequest pageRequest = PageRequest.of(offset, limit);
+        BookParamsDTO params = BookParamsDTO.builder()
+                .publishedGt(1000)
+                .build();
+
+        Book book1 = Book.builder()
+                .publishedYear(1001)
+                .build();
+
+        Book book2 = Book.builder()
+                .publishedYear(1002)
+                .build();
+        Page<Book> books = new PageImpl<>(List.of(book1, book2), pageRequest, 2);
+
+        BookResponseDTO expectedBook1 = BookResponseDTO.builder()
+                .publishedYear(1001)
+                .build();
+
+        BookResponseDTO expectedBook2 = BookResponseDTO.builder()
+                .publishedYear(1002)
+                .build();
+        Page<BookResponseDTO> expectedBooks = new PageImpl<>(List.of(expectedBook1, expectedBook2), pageRequest, 2);
+
+        Specification<Book> spec = (root, query, criteriaBuilder) -> criteriaBuilder.greaterThan(root.get("publishedGt"), params.getPublishedGt());
+
+        when(bookSpecification.build(params)).thenReturn(spec);
+        when(bookRepository.findAll(spec, pageRequest)).thenReturn(books);
+        when(bookMapper.toBookResponse(book1)).thenReturn(expectedBook1);
+        when(bookMapper.toBookResponse(book2)).thenReturn(expectedBook2);
+
+        Page<BookResponseDTO> result = bookService.getAllBooks(params, offset, limit);
+        assertEquals(expectedBooks, result);
+    }
+
+    @Test
+    void findByIdInvalidBookId_ShouldThrowRuntimeException() {
+        Integer bookId = 1;
+
+        when(bookRepository.findById(bookId)).thenReturn(Optional.empty());
+        assertThrows(RuntimeException.class, ()->bookService.findById(bookId));
+    }
+
+    @Test
+    void findById_ShouldThrowRuntimeException() {
+        Integer bookId = 1;
+
+        Book book = Book.builder()
+                .id(bookId)
+                .build();
+
+        BookResponseDTO bookResponseDTO = BookResponseDTO.builder()
+                .id(bookId)
+                .build();
+
+        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
+        when(bookMapper.toBookResponse(book)).thenReturn(bookResponseDTO);
+
+        BookResponseDTO result = bookService.findById(bookId);
+
+        assertEquals(bookResponseDTO, result);
     }
 
 }

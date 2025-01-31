@@ -1,10 +1,12 @@
 package com.lib_for_mentor.lib_for_mentor.model.param;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
+@Builder
 public class BookParamsDTO {
     private String titleCont;   //contains
     private String authorCont;
