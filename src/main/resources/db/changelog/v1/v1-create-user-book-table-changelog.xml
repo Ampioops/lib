@@ -1,0 +1,37 @@
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="v1-4" author="eugene (generated)">
+        <preConditions onFail="MARK_RAN">
+            <runningAs username="postgres"/>
+            <not>
+                <tableExists tableName="user_books"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="user_books">
+
+            <column name="book_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="user_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="user_books"
+                                 baseColumnNames="user_id"
+                                 constraintName="fk_user_id"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="user_books"
+                                 baseColumnNames="book_id"
+                                 constraintName="fk_book_id"
+                                 referencedTableName="books"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+</databaseChangeLog>
