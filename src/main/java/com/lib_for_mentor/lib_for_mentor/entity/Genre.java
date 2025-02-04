@@ -1,7 +1,6 @@
 package com.lib_for_mentor.lib_for_mentor.entity;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
