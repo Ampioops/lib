@@ -5,12 +5,19 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/library
+    driver: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/liquibase_test
     username: postgres
     password: 899
+
+  liquibase:
+    change-log: db/changelog/main-changelog.xml
+    enabled: true
+
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
+
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
