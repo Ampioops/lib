@@ -5,6 +5,7 @@ import com.lib_for_mentor.lib_for_mentor.model.param.BookParamsDTO;
 import com.lib_for_mentor.lib_for_mentor.service.BookService;
 import com.lib_for_mentor.lib_for_mentor.service.impl.BookServiceImpl;
 import com.lib_for_mentor.lib_for_mentor.model.request.BookRequestDTO;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -17,7 +18,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping("/library/book")
 @RequiredArgsConstructor //Автоматом конструктор создает DI
-
+@Tag(name = "Книги", description = "Управление данными книг")
 public class BookController {
 
     private final BookService bookService;

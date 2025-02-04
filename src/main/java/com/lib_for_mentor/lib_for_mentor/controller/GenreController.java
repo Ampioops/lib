@@ -10,6 +10,7 @@ import com.lib_for_mentor.lib_for_mentor.repository.GenreRepository;
 import com.lib_for_mentor.lib_for_mentor.service.GenreService;
 import com.lib_for_mentor.lib_for_mentor.service.impl.AuthorServiceImpl;
 import com.lib_for_mentor.lib_for_mentor.service.impl.GenreServiceImpl;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -22,6 +23,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping("/library/genre")
 @RequiredArgsConstructor
+@Tag(name = "Жанры", description = "Управление данными жанров")
 public class GenreController {
 
     private final GenreService genreService;

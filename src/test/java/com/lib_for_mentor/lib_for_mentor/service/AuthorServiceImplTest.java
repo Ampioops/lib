@@ -227,6 +227,28 @@ public class AuthorServiceImplTest {
     }
 
     @Test
+    void updateAuthorInvalidFirstName_ShouldThrowBadRequestException() {
+        Integer authorId = 1;
+        AuthorRequestDTO request = AuthorRequestDTO.builder()
+                .firstName(null)
+                .lastName("lastName")
+                .build();
+
+        assertThrows(BadRequestException.class, () -> authorService.updateAuthorInfo(authorId, request));
+    }
+
+    @Test
+    void updateAuthorInvalidLastName_ShouldThrowBadRequestException() {
+        Integer authorId = 1;
+        AuthorRequestDTO request = AuthorRequestDTO.builder()
+                .firstName("firstName")
+                .lastName(null)
+                .build();
+
+        assertThrows(BadRequestException.class, () -> authorService.updateAuthorInfo(authorId, request));
+    }
+
+    @Test
     void deleteAuthorInvalidData_ShouldThrowAuthorNotFoundException() {
         Integer authorId = 1;
         Author author = Author.builder()
@@ -392,7 +414,7 @@ public class AuthorServiceImplTest {
     void unassignBookInvalidBookId_ShouldThrowBookNotFoundException() {
         Integer bookId = 1;
         Integer authorId = 2;
-        assertThrows(BookNotFoundException.class, () -> authorService.assignBook(authorId, bookId));
+        assertThrows(BookNotFoundException.class, () -> authorService.unassignBook(authorId, bookId));
     }
 
     @Test
@@ -404,7 +426,7 @@ public class AuthorServiceImplTest {
         Integer authorId = 1;
         when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
 
-        assertThrows(AuthorNotFoundException.class, () -> authorService.assignBook(authorId, bookId));
+        assertThrows(AuthorNotFoundException.class, () -> authorService.unassignBook(authorId, bookId));
     }
 
     @Test
@@ -441,7 +463,7 @@ public class AuthorServiceImplTest {
         when(bookMapper.toBookResponse(book)).thenReturn(expectedBook);
         when(authorMapper.toAuthorResponse(author)).thenReturn(expectedAuthor);
 
-        AuthorResponseDTO result = authorService.assignBook(authorId, bookId);
+        AuthorResponseDTO result = authorService.unassignBook(authorId, bookId);
 
         assertEquals(expectedAuthor, result);
         verify(bookRepository, times(1)).findById(bookId);

@@ -12,7 +12,7 @@ public class BookSpecification {
         if (params == null) {
             return null;
         }
-        return withAuthor(params.getAuthorCont())
+        return withAuthorName(params.getAuthorNameCont())
                 .and(withPagesGt(params.getPagesGt()))
                 .and(withPagesLt(params.getPagesLt()))
                 .and(withPublishedEq(params.getPublishedEq()))
@@ -26,9 +26,9 @@ public class BookSpecification {
                 title != null ? criteriaBuilder.equal(root.get("title"), title) : criteriaBuilder.conjunction());
     }
 
-    private static Specification<Book> withAuthor(String author) {
+    private static Specification<Book> withAuthorName(String authorName) {
         return ((root, query, criteriaBuilder) ->
-                author != null ? criteriaBuilder.equal(root.get("author"), author) : criteriaBuilder.conjunction());
+                authorName != null ? criteriaBuilder.equal(root.get("author").get("firstName"), authorName) : criteriaBuilder.conjunction());
     }
 
     private static Specification<Book> withPublishedGt(Integer year) {

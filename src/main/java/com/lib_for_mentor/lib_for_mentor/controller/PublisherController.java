@@ -4,6 +4,8 @@ import com.lib_for_mentor.lib_for_mentor.model.request.PublisherRequestDTO;
 import com.lib_for_mentor.lib_for_mentor.model.response.PublisherResponseDTO;
 import com.lib_for_mentor.lib_for_mentor.service.PublisherService;
 import com.lib_for_mentor.lib_for_mentor.service.impl.PublisherServiceImpl;
+import io.swagger.v3.oas.annotations.ExternalDocumentation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -16,6 +18,12 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping("/library/publisher")
 @RequiredArgsConstructor
+@Tag(name = "Издательства",
+        description = "Управление данными издательств",
+        externalDocs = @ExternalDocumentation(
+        description = "Фейк ссылка на общую документацию",
+        url = "https://example.com/docs/user-controller"
+))
 public class PublisherController {
 
     private final PublisherService publisherService;

@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @ControllerAdvice
 public class GlobalAdvice {
 
-    @ExceptionHandler({AuthorNotFoundException.class, BookNotFoundException.class})
+    @ExceptionHandler({AuthorNotFoundException.class, BookNotFoundException.class, UserNotFoundException.class, PublisherNotFoundException.class, GenreNotFoundException.class})
     public ResponseEntity<ErrorResponse> handleNotFoundException(Exception e, WebRequest request) {
         ErrorResponse response = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
