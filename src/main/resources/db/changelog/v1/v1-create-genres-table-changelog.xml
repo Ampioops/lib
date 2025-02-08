@@ -5,7 +5,7 @@
 
     <changeSet id="v1-5" author="eugene (generated)">
         <preConditions onFail="MARK_RAN">
-            <runningAs username="postgres"/>
+            <runningAs username="test_user"/>
             <not>
                 <tableExists tableName="genres"/>
             </not>

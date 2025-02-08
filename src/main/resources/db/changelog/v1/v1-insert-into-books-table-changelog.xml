@@ -1,0 +1,43 @@
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="v1-8" author="EUGENE (GENERATED)">
+        <preConditions onFail="MARK_RAN">
+            <runningAs  username="test_user"/>
+            <tableExists tableName="books"/>
+        </preConditions>
+
+        <insert tableName="books">
+            <column name="id" value="1" />
+            <column name="title" value="1BookTitle"/>
+            <column name="published_year" value="1000"/>
+            <column name="pages" value="100"/>
+            <column name="description" value="1BookDescription"/>
+            <column name="author_id" value="1"/>
+            <column name="genre_id" value="1"/>
+            <column name="publisher_id" value="1"/>
+        </insert>
+        <insert tableName="books">
+            <column name="id" value="2" />
+            <column name="title" value="2BookTitle"/>
+            <column name="published_year" value="2000"/>
+            <column name="pages" value="200"/>
+            <column name="description" value="2BookDescription"/>
+            <column name="author_id" value="2"/>
+            <column name="genre_id" value="2"/>
+            <column name="publisher_id" value="2"/>
+        </insert>
+        <insert tableName="books">
+            <column name="id" value="3" />
+            <column name="title" value="3BookTitle"/>
+            <column name="published_year" value="3000"/>
+            <column name="pages" value="300"/>
+            <column name="description" value="3BookDescription"/>
+            <column name="author_id" value="3"/>
+            <column name="genre_id" value="3"/>
+            <column name="publisher_id" value="3"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,49 @@
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="v1-11" author="EUGENE (GENERATED)">
+        <preConditions onFail="MARK_RAN">
+            <runningAs  username="test_user"/>
+            <tableExists tableName="users"/>
+        </preConditions>
+
+        <insert tableName="users">
+            <column name="id" value="1" />
+            <column name="first_name" value="1UserFirstName"/>
+            <column name="last_name" value="1UserLastName"/>
+            <column name="email" value="1UserEmail"/>
+        </insert>
+        <insert tableName="users">
+            <column name="id" value="2" />
+            <column name="first_name" value="2UserFirstName"/>
+            <column name="last_name" value="2UserLastName"/>
+            <column name="email" value="2UserEmail"/>
+        </insert>
+        <insert tableName="users">
+            <column name="id" value="3" />
+            <column name="first_name" value="3UserFirstName"/>
+            <column name="last_name" value="3UserLastName"/>
+            <column name="email" value="3UserEmail"/>
+        </insert>
+        <insert tableName="users">
+            <column name="id" value="4" />
+            <column name="first_name" value="4UserFirstName"/>
+            <column name="last_name" value="4UserLastName"/>
+            <column name="email" value="4UserEmail"/>
+        </insert>
+        <insert tableName="users">
+            <column name="id" value="5" />
+            <column name="first_name" value="5UserFirstName"/>
+            <column name="last_name" value="5UserLastName"/>
+            <column name="email" value="5UserEmail"/>
+        </insert>
+        <insert tableName="users">
+            <column name="id" value="6" />
+            <column name="first_name" value="6UserFirstName"/>
+            <column name="last_name" value="6UserLastName"/>
+            <column name="email" value="6UserEmail"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

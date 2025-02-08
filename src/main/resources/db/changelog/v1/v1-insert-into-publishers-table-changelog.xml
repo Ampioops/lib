@@ -1,0 +1,25 @@
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="v1-10" author="EUGENE (GENERATED)">
+        <preConditions onFail="MARK_RAN">
+            <runningAs  username="test_user"/>
+            <tableExists tableName="publishers"/>
+        </preConditions>
+
+        <insert tableName="publishers">
+            <column name="id" value="1" />
+            <column name="name" value="1PublisherName"/>
+        </insert>
+        <insert tableName="publishers">
+            <column name="id" value="2" />
+            <column name="name" value="2PublisherName"/>
+        </insert>
+        <insert tableName="publishers">
+            <column name="id" value="3" />
+            <column name="name" value="3PublisherName"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
