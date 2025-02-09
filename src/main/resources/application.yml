@@ -29,6 +29,8 @@ spring:
     user: test_user
     password: test_password
     drop-first: true  # Для тестов
+    parameters:
+      user: test_user
 
   jpa:
     hibernate:
