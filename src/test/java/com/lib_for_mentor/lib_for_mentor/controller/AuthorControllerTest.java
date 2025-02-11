@@ -81,15 +81,33 @@ class AuthorControllerTest {
     }
 
     @Test
-    void updateAuthor() {
+    void updateAuthor() throws Exception {
+        String authorJson = """
+                {
+                    "firstName": "AuthorNewFirstName",
+                    "lastName": "AuthorNewLastName"
+                }
+                """;
+        mockMvc.perform(patch("/library/author/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(authorJson))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.firstName").value("AuthorNewFirstName"))
+                .andExpect(jsonPath("$.lastName").value("AuthorNewLastName"));
     }
 
     @Test
-    void assignBook() {
+    void assignBook() throws Exception{
+        mockMvc.perform(patch("/library/author/1/assignBook/3"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.books[1].title").value("3BookTitle"));
     }
 
     @Test
-    void unassignBook() {
+    void unassignBook() throws Exception{
+        mockMvc.perform(patch("/library/author/1/unassignBook/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.books").isEmpty());
     }
 
     @Test
@@ -100,13 +118,21 @@ class AuthorControllerTest {
 
     @Test
     void getAuthors() throws Exception {
-        mockMvc.perform(get("http://localhost:8888/library/author/"))
-                .andExpect(status().isOk());
+        mockMvc.perform(get("http://localhost:8888/library/author/")
+                        .param("offcet", "0")
+                        .param("limit", "10")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content").isNotEmpty());
     }
 
     @Test
     void getAuthorById() throws Exception {
-        mockMvc.perform(get("http://localhost:8888/library/author/1"))
-                .andExpect(status().isOk());
+        mockMvc.perform(get("/library/author/{id}", 1)) // корректный путь с подставленным id
+                .andExpect(status().isOk()) // ожидаем HTTP 200 OK
+                .andExpect(jsonPath("$.id").value(1)) // проверяем, что id = 1
+                .andExpect(jsonPath("$.firstName").isNotEmpty()) // firstName не пустой
+                .andExpect(jsonPath("$.lastName").isNotEmpty()); // lastName не пустой
     }
 }
