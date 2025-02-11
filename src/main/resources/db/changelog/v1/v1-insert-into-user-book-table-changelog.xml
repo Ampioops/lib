@@ -34,4 +34,7 @@
             <column name="user_id" value="6"/>
         </insert>
     </changeSet>
+<!--    <changeSet id="reset_seq_user_books" author="EUGENE (GENERATED)">-->
+<!--        <sql>SELECT setval('user_books_id_seq', (SELECT MAX(id) FROM user_books), true);</sql>-->
+<!--    </changeSet>-->
 </databaseChangeLog>

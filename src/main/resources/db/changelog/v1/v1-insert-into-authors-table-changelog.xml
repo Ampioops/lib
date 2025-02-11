@@ -25,4 +25,8 @@
             <column name="last_name" value="3AuthorLastName"/>
         </insert>
     </changeSet>
+
+    <changeSet id="reset_seq_authors" author="EUGENE (GENERATED)">
+        <sql>SELECT setval('authors_id_seq', (SELECT MAX(id) FROM authors), true);</sql>
+    </changeSet>
 </databaseChangeLog>

@@ -22,4 +22,8 @@
             <column name="name" value="3GenreName"/>
         </insert>
     </changeSet>
+
+    <changeSet id="reset_seq_genres" author="EUGENE (GENERATED)">
+        <sql>SELECT setval('genres_id_seq', (SELECT MAX(id) FROM genres), true);</sql>
+    </changeSet>
 </databaseChangeLog>

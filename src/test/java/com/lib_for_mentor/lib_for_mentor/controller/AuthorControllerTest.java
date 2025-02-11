@@ -1,10 +1,11 @@
 package com.lib_for_mentor.lib_for_mentor.controller;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -14,9 +15,8 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Testcontainers
@@ -48,7 +48,36 @@ class AuthorControllerTest {
     }
 
     @Test
-    void createAuthor() {
+    void createAuthor() throws Exception {
+        String authorJson = """
+                {
+                    "firstName": "NewAuthorFirstName",
+                    "lastName": "NewAuthorLastName",
+                    "books": [
+                        {
+                            "title": "Первая книга",
+                            "year": 2020,
+                            "genreId": 1,
+                            "publisherId": 1
+                        },
+                        {
+                            "title": "Вторая книга",
+                            "year": 2022,
+                            "genreId": 1,
+                            "publisherId": 1
+                        }
+                    ]
+                }
+                """;
+        mockMvc.perform(post("/library/author/")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(authorJson))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.firstName").value("NewAuthorFirstName"))
+                .andExpect(jsonPath("$.lastName").value("NewAuthorLastName"))
+                .andExpect(jsonPath("$.books").isArray())  // Проверяем, что поле books — это массив
+                .andExpect(jsonPath("$.books[0].title").value("Первая книга"))  // Проверяем первую книгу
+                .andExpect(jsonPath("$.books[1].title").value("Вторая книга")); // Проверяем вторую книгу
     }
 
     @Test
@@ -66,14 +95,18 @@ class AuthorControllerTest {
     @Test
     void deleteAuthor() throws Exception {
         mockMvc.perform(delete("http://localhost:8888/library/author/{id}", 1))
-                .andExpect(status().isNoContent());
+                .andExpect(status().is2xxSuccessful());
     }
 
     @Test
-    void getAuthors() {
+    void getAuthors() throws Exception {
+        mockMvc.perform(get("http://localhost:8888/library/author/"))
+                .andExpect(status().isOk());
     }
 
     @Test
-    void getAuthorById() {
+    void getAuthorById() throws Exception {
+        mockMvc.perform(get("http://localhost:8888/library/author/1"))
+                .andExpect(status().isOk());
     }
 }

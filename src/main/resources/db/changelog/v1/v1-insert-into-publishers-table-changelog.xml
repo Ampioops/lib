@@ -22,4 +22,8 @@
             <column name="name" value="3PublisherName"/>
         </insert>
     </changeSet>
+
+    <changeSet id="reset_seq_publishers" author="EUGENE (GENERATED)">
+        <sql>SELECT setval('publishers_id_seq', (SELECT MAX(id) FROM publishers), true);</sql>
+    </changeSet>
 </databaseChangeLog>

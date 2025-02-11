@@ -46,4 +46,8 @@
             <column name="email" value="6UserEmail"/>
         </insert>
     </changeSet>
+
+    <changeSet id="reset_seq_users" author="EUGENE (GENERATED)">
+        <sql>SELECT setval('users_id_seq', (SELECT MAX(id) FROM users), true);</sql>
+    </changeSet>
 </databaseChangeLog>
