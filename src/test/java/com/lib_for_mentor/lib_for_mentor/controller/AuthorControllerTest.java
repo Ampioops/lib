@@ -1,74 +1,69 @@
 package com.lib_for_mentor.lib_for_mentor.controller;
 
-import org.junit.jupiter.api.BeforeEach;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
+import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Testcontainers
 @SpringBootTest
+@Testcontainers
 @AutoConfigureMockMvc
-class AuthorControllerTest {
+@Transactional
+@ActiveProfiles("test")
+class AuthorControllerTest extends TestConfig{
 
     @Autowired
     private MockMvc mockMvc;
 
-    @Container
-    private static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(DockerImageName.parse("postgres:15"))
-            .withUsername("test_user")
-            .withPassword("test_password")
-            .withDatabaseName("test_db");
-
-    @DynamicPropertySource
-    static void postgresProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgres::getJdbcUrl);
-        registry.add("spring.datasource.username", postgres::getUsername);
-        registry.add("spring.datasource.password", postgres::getPassword);
-
-        registry.add("spring.liquibase.enabled", () -> true);
-        registry.add("spring.liquibase.change-log", () -> "db/changelog/main-changelog.xml");
-        registry.add("spring.liquibase.url", postgres::getJdbcUrl);
-        registry.add("spring.liquibase.user", postgres::getUsername);
-        registry.add("spring.liquibase.password", postgres::getPassword);
-        registry.add("spring.liquibase.drop-first", () -> true);
-    }
-
     @Test
+    @Rollback
     void createAuthor() throws Exception {
-        String authorJson = """
-                {
-                    "firstName": "NewAuthorFirstName",
-                    "lastName": "NewAuthorLastName",
-                    "books": [
-                        {
-                            "title": "Первая книга",
-                            "year": 2020,
-                            "genreId": 1,
-                            "publisherId": 1
-                        },
-                        {
-                            "title": "Вторая книга",
-                            "year": 2022,
-                            "genreId": 1,
-                            "publisherId": 1
-                        }
-                    ]
-                }
-                """;
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        // Создаем JSON-объект для автора
+        ObjectNode author = objectMapper.createObjectNode()
+                .put("firstName", "NewAuthorFirstName")
+                .put("lastName", "NewAuthorLastName");
+
+        // Создаем массив книг
+        ArrayNode booksArray = objectMapper.createArrayNode();
+
+        // Первая книга
+        ObjectNode book1 = objectMapper.createObjectNode()
+                .put("title", "Первая книга")
+                .put("year", 2020)
+                .put("genreId", 1)
+                .put("publisherId", 1);
+        booksArray.add(book1);
+
+        // Вторая книга
+        ObjectNode book2 = objectMapper.createObjectNode()
+                .put("title", "Вторая книга")
+                .put("year", 2022)
+                .put("genreId", 1)
+                .put("publisherId", 1);
+        booksArray.add(book2);
+
+        // Добавляем книги в объект автора
+        author.set("books", booksArray);
+
+        // Преобразуем JSON в строку
+        String authorJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(author);
+
         mockMvc.perform(post("/library/author/")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(authorJson))
@@ -81,13 +76,16 @@ class AuthorControllerTest {
     }
 
     @Test
+    @Rollback
     void updateAuthor() throws Exception {
-        String authorJson = """
-                {
-                    "firstName": "AuthorNewFirstName",
-                    "lastName": "AuthorNewLastName"
-                }
-                """;
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode author = objectMapper.createObjectNode()
+                .put("firstName", "AuthorNewFirstName")
+                .put("lastName", "AuthorNewLastName");
+
+        String authorJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(author);
+
         mockMvc.perform(patch("/library/author/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(authorJson))
@@ -97,20 +95,23 @@ class AuthorControllerTest {
     }
 
     @Test
+    @Rollback
     void assignBook() throws Exception{
-        mockMvc.perform(patch("/library/author/1/assignBook/3"))
+        mockMvc.perform(patch("/library/author/2/assignBook/2"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.books[1].title").value("3BookTitle"));
+                .andExpect(jsonPath("$.books[0].id").value("2"));
     }
 
     @Test
+    @Rollback
     void unassignBook() throws Exception{
-        mockMvc.perform(patch("/library/author/1/unassignBook/1"))
+        mockMvc.perform(patch("/library/author/3/unassignBook/3"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.books").isEmpty());
     }
 
     @Test
+    @Rollback
     void deleteAuthor() throws Exception {
         mockMvc.perform(delete("http://localhost:8888/library/author/{id}", 1))
                 .andExpect(status().is2xxSuccessful());

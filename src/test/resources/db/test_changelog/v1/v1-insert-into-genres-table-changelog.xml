@@ -1,0 +1,29 @@
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="v1-9" author="EUGENE (GENERATED)">
+        <preConditions onFail="MARK_RAN">
+            <runningAs  username="test_user"/>
+            <tableExists tableName="genres"/>
+        </preConditions>
+
+        <insert tableName="genres">
+            <column name="id" value="1" />
+            <column name="name" value="1GenreName"/>
+        </insert>
+        <insert tableName="genres">
+            <column name="id" value="2" />
+            <column name="name" value="2GenreName"/>
+        </insert>
+        <insert tableName="genres">
+            <column name="id" value="3" />
+            <column name="name" value="3GenreName"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="reset_seq_genres" author="EUGENE (GENERATED)">
+        <sql>SELECT setval('genres_id_seq', (SELECT MAX(id) FROM genres), true);</sql>
+    </changeSet>
+</databaseChangeLog>

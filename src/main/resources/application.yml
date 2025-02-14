@@ -4,41 +4,27 @@ server:
     include-message: always
 
 spring:
-  #  datasource:
-  #    driver: org.postgresql.Driver
-  #    url: jdbc:postgresql://localhost:5432/liquibase_test
-  #    username: postgres
-  #    password: 899
-  #  jpa:
-  #    hibernate:
-  #      ddl-auto: validate
-  #    properties:
-  #      hibernate:
-  #        dialect: org.hibernate.dialect.PostgreSQLDialect
-  #    show-sql: true
-
   datasource:
-    url: jdbc:postgresql://localhost:5433/test_db
-    username: test_user
-    password: test_password
+    driver: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/liquibase_test
+    username: postgres
+    password: 899
+    jpa:
+      hibernate:
+        ddl-auto: validate
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.PostgreSQLDialect
+      show-sql: true
 
   liquibase:
     enabled: true
     change-log: db/changelog/main-changelog.xml
     url: jdbc:postgresql://localhost:5433/test_db
-    user: test_user
-    password: test_password
+    user: user
+    password: password
     drop-first: true  # Для тестов
     parameters:
       user: test_user
-
-  jpa:
-    hibernate:
-      ddl-auto: none  # Для тестов
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-    show-sql: true
-
   main:
     web-application-type: servlet

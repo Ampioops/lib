@@ -1,0 +1,12 @@
+spring:
+  liquibase:
+    enabled: true
+    change-log: db/test_changelog/main-changelog.xml
+    drop-first: true
+  jpa:
+    hibernate:
+      ddl-auto: none  # Для тестов
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
