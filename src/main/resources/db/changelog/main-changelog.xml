@@ -3,6 +3,8 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
+    <property name="user" value="${user_name}"/>
+
     <include file="v1/v1-accumulate-creations-changelog.xml" relativeToChangelogFile="true"/>
     <include file="v1/v1-accumulate-insertions-changelog.xml" relativeToChangelogFile="true"/>
 

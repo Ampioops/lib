@@ -6,12 +6,12 @@ server:
 spring:
   datasource:
     driver: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/liquibase_test
+    url: jdbc:postgresql://localhost:5432/db-postgres
     username: postgres
-    password: 899
+    password: postgres_password
     jpa:
       hibernate:
-        ddl-auto: validate
+        ddl-auto: none
       properties:
         hibernate:
           dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -20,11 +20,10 @@ spring:
   liquibase:
     enabled: true
     change-log: db/changelog/main-changelog.xml
-    url: jdbc:postgresql://localhost:5433/test_db
-    user: user
-    password: password
-    drop-first: true  # Для тестов
+    url: jdbc:postgresql://localhost:5432/db-postgres
+    user: postgres
+    password: postgres_password
     parameters:
-      user: test_user
+      user_name: postgres
   main:
     web-application-type: servlet

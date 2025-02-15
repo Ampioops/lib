@@ -5,7 +5,7 @@
 
     <changeSet id="v1-12" author="EUGENE (GENERATED)">
         <preConditions onFail="MARK_RAN">
-            <runningAs username="test_user"/>
+            <runningAs username="${user}"/>
             <tableExists tableName="user_books"/>
         </preConditions>
 
