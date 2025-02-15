@@ -6,7 +6,7 @@ server:
 spring:
   datasource:
     driver: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/db-postgres
+    url: jdbc:postgresql://db:5432/db-postgres
     username: postgres
     password: postgres_password
     jpa:
@@ -20,7 +20,7 @@ spring:
   liquibase:
     enabled: true
     change-log: db/changelog/main-changelog.xml
-    url: jdbc:postgresql://localhost:5432/db-postgres
+    url: jdbc:postgresql://db:5432/db-postgres
     user: postgres
     password: postgres_password
     parameters:

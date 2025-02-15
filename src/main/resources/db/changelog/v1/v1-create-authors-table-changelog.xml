@@ -6,7 +6,7 @@
 
     <changeSet id="v1-1" author="EUGENE (GENERATED)">
         <preConditions onFail="MARK_RAN">
-            <runningAs  username="${user_name}"/>
+            <runningAs  username="${user}"/>
             <not>
                 <tableExists tableName="authors"/>
             </not>
