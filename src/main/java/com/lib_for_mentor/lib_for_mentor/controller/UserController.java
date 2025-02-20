@@ -35,22 +35,22 @@ public class UserController {
     }
 
     @PatchMapping(value ="/{userId}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public UserResponseDTO updateUser(@PathVariable Integer userId, @RequestBody UserRequestDTO request) {
+    public UserResponseDTO updateUser(@PathVariable("userId") Integer userId, @RequestBody UserRequestDTO request) {
         return userService.updateUserInfo(userId, request);
     }
 
     @PatchMapping(value ="/{userId}/assignBook/{bookId}", produces = APPLICATION_JSON_VALUE)
-    public UserResponseDTO assignBook(@PathVariable Integer userId, @PathVariable Integer bookId) {
+    public UserResponseDTO assignBook(@PathVariable("userId") Integer userId, @PathVariable("bookId") Integer bookId) {
         return userService.assignBook(userId, bookId);
     }
 
     @PatchMapping(value ="/{userId}/unassignBook/{bookId}", produces = APPLICATION_JSON_VALUE)
-    public UserResponseDTO unassignBook(@PathVariable Integer userId, @PathVariable Integer bookId) {
+    public UserResponseDTO unassignBook(@PathVariable("userId") Integer userId, @PathVariable("bookId") Integer bookId) {
         return userService.unassignBook(userId, bookId);
     }
 
     @DeleteMapping(value = "/{userId}")
-    public void deleteAuthor(@PathVariable Integer userId) {
+    public void deleteAuthor(@PathVariable("userId") Integer userId) {
         userService.deleteById(userId);
     }
 
@@ -67,12 +67,12 @@ public class UserController {
     public Page<BookResponseDTO> getUserBooks(
             @RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
             @RequestParam(value = "limit", defaultValue = "10") @Min(1) @Max(100) Integer limit,
-            @PathVariable Integer userId) {
+            @PathVariable("userId") Integer userId) {
         return userService.getUserBooks(userId, offset, limit);
     }
 
     @GetMapping(value = "/{userId}", produces = APPLICATION_JSON_VALUE)
-    public UserResponseDTO getUserById(@PathVariable @NotNull Integer userId) {
+    public UserResponseDTO getUserById(@PathVariable("userId") @NotNull Integer userId) {
         return userService.findById(userId);
     }
 }

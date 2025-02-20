@@ -14,7 +14,7 @@ services:
       interval: 5s
       retries: 2
     volumes:
-      - test_postgres_data:/var/lib/postgresql/data
+      - lib:/var/lib/postgresql/data
 
   app:
     build: .
@@ -27,7 +27,7 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres_password
     ports:
-      - "8080:8080"
+      - "8080:8888"
 
 volumes:
-  test_postgres_data:
+  lib:

@@ -1,5 +1,7 @@
 package com.lib_for_mentor.lib_for_mentor.service.impl;
 
+import com.lib_for_mentor.lib_for_mentor.client.SubscriptionClient;
+import com.lib_for_mentor.lib_for_mentor.client.dto.SubscriptionRequest;
 import com.lib_for_mentor.lib_for_mentor.entity.Book;
 import com.lib_for_mentor.lib_for_mentor.entity.User;
 import com.lib_for_mentor.lib_for_mentor.mapper.BookMapper;
@@ -20,7 +22,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -31,6 +35,7 @@ public class UserServiceImpl implements UserService {
     private final UserSpecification userSpecification;
     private final BookMapper bookMapper;
     private final BookRepository bookRepository;
+    private final SubscriptionClient subscriptionClient;
 
     @NotNull
     @Transactional
@@ -112,6 +117,17 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
         book.getUsers().add(user);
+
+        UUID uuidUser = UUID.nameUUIDFromBytes(String.valueOf(userId).getBytes());
+        UUID uuidBook = UUID.nameUUIDFromBytes(String.valueOf(bookId).getBytes());
+        SubscriptionRequest subscriptionRequest = SubscriptionRequest.builder()
+                .userId(uuidUser)
+                .referenceId(uuidBook)
+                .type("BOOK_ADDITION")
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        subscriptionClient.createSubscription(subscriptionRequest);
 
         return userMapper.toUserResponse(user);
     }
