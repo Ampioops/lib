@@ -48,9 +48,9 @@ public class UserServiceImpl implements UserService {
                 .build();
 
         List<Integer> bookIds = request.getBooksId();
-        if(bookIds != null && !bookIds.isEmpty()) {
-            books =  bookRepository.findAllById(request.getBooksId());
-        }else {
+        if (bookIds != null && !bookIds.isEmpty()) {
+            books = bookRepository.findAllById(request.getBooksId());
+        } else {
             books = null;
         }
         user.setBooks(books);
@@ -118,8 +118,9 @@ public class UserServiceImpl implements UserService {
 
         book.getUsers().add(user);
 
-        UUID uuidUser = UUID.nameUUIDFromBytes(String.valueOf(userId).getBytes());
-        UUID uuidBook = UUID.nameUUIDFromBytes(String.valueOf(bookId).getBytes());
+        UUID uuidUser = new UUID(0, userId);
+        UUID uuidBook = new UUID(0, bookId);
+
         SubscriptionRequest subscriptionRequest = SubscriptionRequest.builder()
                 .userId(uuidUser)
                 .referenceId(uuidBook)
