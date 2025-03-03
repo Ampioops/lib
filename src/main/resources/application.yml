@@ -27,5 +27,6 @@ spring:
     parameters:
       user_name: postgres
 
+
   main:
     web-application-type: servlet

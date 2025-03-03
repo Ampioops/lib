@@ -6,15 +6,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
-
 @Data
 @Accessors(chain = true)
 @Builder
-public class SubscriptionRequest {
+@NoArgsConstructor
+@AllArgsConstructor
+public class ContactInfoResponse {
     private Integer userId;
-    private String type;
-    private Integer referenceId;
-    private LocalDateTime createdAt;
+    private String numberPhone;
+    private String email;
+    private SubscriptionResponse subscription;
 }

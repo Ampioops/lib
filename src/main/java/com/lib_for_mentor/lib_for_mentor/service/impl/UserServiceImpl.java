@@ -2,6 +2,7 @@ package com.lib_for_mentor.lib_for_mentor.service.impl;
 
 import com.lib_for_mentor.lib_for_mentor.client.SubscriptionClient;
 import com.lib_for_mentor.lib_for_mentor.client.dto.SubscriptionRequest;
+import com.lib_for_mentor.lib_for_mentor.client.dto.SubscriptionResponse;
 import com.lib_for_mentor.lib_for_mentor.entity.Book;
 import com.lib_for_mentor.lib_for_mentor.entity.User;
 import com.lib_for_mentor.lib_for_mentor.mapper.BookMapper;
@@ -118,13 +119,10 @@ public class UserServiceImpl implements UserService {
 
         book.getUsers().add(user);
 
-        UUID uuidUser = new UUID(0, userId);
-        UUID uuidBook = new UUID(0, bookId);
-
         SubscriptionRequest subscriptionRequest = SubscriptionRequest.builder()
-                .userId(uuidUser)
-                .referenceId(uuidBook)
-                .type("BOOK_ADDITION")
+                .userId(userId)
+                .referenceId(bookId)
+                .type("BOOK_DELETION")
                 .createdAt(LocalDateTime.now())
                 .build();
 
@@ -148,5 +146,11 @@ public class UserServiceImpl implements UserService {
 
         book.getUsers().remove(user);
         return userMapper.toUserResponse(user);
+    }
+
+    @NotNull
+    @Transactional
+    public Page<SubscriptionResponse> getSubscriptions(@NotNull Integer userId, Integer offset, Integer limit) {
+        return subscriptionClient.getSubscriptionsByUser(userId, offset, limit);
     }
 }

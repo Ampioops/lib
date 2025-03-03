@@ -1,10 +1,15 @@
 package com.lib_for_mentor.lib_for_mentor.controller;
 
+import com.lib_for_mentor.lib_for_mentor.client.SubscriptionClient;
+import com.lib_for_mentor.lib_for_mentor.client.dto.SubscriptionParam;
+import com.lib_for_mentor.lib_for_mentor.client.dto.SubscriptionResponse;
 import com.lib_for_mentor.lib_for_mentor.model.param.UserParamsDTO;
 import com.lib_for_mentor.lib_for_mentor.model.request.UserRequestDTO;
 import com.lib_for_mentor.lib_for_mentor.model.response.BookResponseDTO;
 import com.lib_for_mentor.lib_for_mentor.model.response.UserResponseDTO;
+import com.lib_for_mentor.lib_for_mentor.service.BookService;
 import com.lib_for_mentor.lib_for_mentor.service.UserService;
+import com.lib_for_mentor.lib_for_mentor.service.impl.UserServiceImpl;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Max;
@@ -13,6 +18,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -74,5 +81,14 @@ public class UserController {
     @GetMapping(value = "/{userId}", produces = APPLICATION_JSON_VALUE)
     public UserResponseDTO getUserById(@PathVariable("userId") @NotNull Integer userId) {
         return userService.findById(userId);
+    }
+
+    @GetMapping(value = "/subs/{userId}")
+    public Page<SubscriptionResponse> getUserSubscriptions(
+            @PathVariable("userId") Integer userId,
+            @RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset, //Пагинация
+            @RequestParam(value = "limit", defaultValue = "10") @Min(1) @Max(100) Integer limit
+    ){
+        return userService.getSubscriptions(userId, offset, limit);
     }
 }
