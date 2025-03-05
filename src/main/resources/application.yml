@@ -27,6 +27,7 @@ spring:
     parameters:
       user_name: postgres
 
-
+  kafka:
+    bootstrap-servers: kafka:9092
   main:
     web-application-type: servlet

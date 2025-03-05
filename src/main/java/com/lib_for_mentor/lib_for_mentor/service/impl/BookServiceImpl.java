@@ -1,8 +1,9 @@
 package com.lib_for_mentor.lib_for_mentor.service.impl;
 
+import com.lib_for_mentor.lib_for_mentor.config.KafkaProducerConfig;
 import com.lib_for_mentor.lib_for_mentor.entity.Book;
 import com.lib_for_mentor.lib_for_mentor.mapper.BookMapper;
-import com.lib_for_mentor.lib_for_mentor.mapper.BookMapperImpl;
+import com.lib_for_mentor.lib_for_mentor.model.event.BookEvent;
 import com.lib_for_mentor.lib_for_mentor.model.param.BookParamsDTO;
 import com.lib_for_mentor.lib_for_mentor.model.request.BookRequestDTO;
 import com.lib_for_mentor.lib_for_mentor.model.response.BookResponseDTO;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +32,7 @@ public class BookServiceImpl implements BookService {
     private final BookMapper bookMapper;
     private final GenreRepository genreRepository;
     private final PublisherRepository publisherRepository;
+    private final KafkaTemplate<String, BookEvent> kafkaTemplate;
 
     @NotNull
     @Transactional
@@ -43,7 +46,17 @@ public class BookServiceImpl implements BookService {
                 .genre(genreRepository.findById(request.getGenreId()).orElse(null))
                 .publisher(publisherRepository.findById(request.getPublisherId()).orElse(null))
                 .build();
-        bookRepository.save(book);
+        Integer bookId =  bookRepository.save(book).getId();
+
+        BookEvent event = BookEvent.builder()
+                .eventType("CREATED")
+                .genreId(request.getGenreId())
+                .authorId(request.getAuthorId())
+                .bookId(bookId)
+                .build();
+
+        kafkaTemplate.send("book-events", event);
+
         return bookMapper.toBookResponse(book);
     }
 

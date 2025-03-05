@@ -15,7 +15,8 @@ services:
       retries: 2
     volumes:
       - lib:/var/lib/postgresql/data
-
+    networks:
+      - library_network
   app:
     build: .
     container_name: lib_container
@@ -23,11 +24,18 @@ services:
     depends_on:
       - db
     environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/db-postgres
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres_password
     ports:
       - "8080:8888"
+    networks:
+      - library_network
 
 volumes:
   lib:
+
+networks:
+  library_network:
+    external: true
