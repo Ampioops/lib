@@ -1,6 +1,5 @@
 package com.lib_for_mentor.lib_for_mentor.service.impl;
 
-import com.lib_for_mentor.lib_for_mentor.config.KafkaProducerConfig;
 import com.lib_for_mentor.lib_for_mentor.entity.Book;
 import com.lib_for_mentor.lib_for_mentor.mapper.BookMapper;
 import com.lib_for_mentor.lib_for_mentor.model.event.BookEvent;
@@ -50,8 +49,8 @@ public class BookServiceImpl implements BookService {
 
         BookEvent event = BookEvent.builder()
                 .eventType("CREATED")
-                .genreId(request.getGenreId())
-                .authorId(request.getAuthorId())
+                .genreId(book.getGenre() != null ? book.getGenre().getId() : null)
+                .authorId(book.getAuthor() != null ? book.getAuthor().getId() : null)
                 .bookId(bookId)
                 .build();
 

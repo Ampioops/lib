@@ -39,8 +39,7 @@
             <column name="publisher_id" value="3"/>
         </insert>
     </changeSet>
-
-    <changeSet id="reset_seq_books" author="EUGENE (GENERATED)">
-        <sql>SELECT setval('books_id_seq', (SELECT MAX(id) FROM books), true);</sql>
+    <changeSet id="reset_seq_books" author="EUGENE (FIXED)">
+        <sql>SELECT setval('books_id_seq', (SELECT COALESCE(MAX(id), 0) + 1 FROM books), false);</sql>
     </changeSet>
 </databaseChangeLog>

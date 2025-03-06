@@ -1,4 +1,4 @@
-package com.lib_for_mentor.lib_for_mentor.config;
+package com.lib_for_mentor.lib_for_mentor.config.producer;
 
 import com.lib_for_mentor.lib_for_mentor.model.event.BookEvent;
 import org.apache.kafka.clients.producer.ProducerConfig;
