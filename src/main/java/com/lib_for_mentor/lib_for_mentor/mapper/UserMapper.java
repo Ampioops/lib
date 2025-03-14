@@ -1,7 +1,7 @@
 package com.lib_for_mentor.lib_for_mentor.mapper;
 
 import com.lib_for_mentor.lib_for_mentor.entity.User;
-import com.lib_for_mentor.lib_for_mentor.model.response.UserResponseDTO;
+import org.common.common_utils.response.UserResponseDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.stereotype.Component;

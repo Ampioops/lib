@@ -1,15 +1,8 @@
 package com.lib_for_mentor.lib_for_mentor.controller;
 
-import com.lib_for_mentor.lib_for_mentor.model.param.AuthorParamsDTO;
-import com.lib_for_mentor.lib_for_mentor.model.request.AuthorRequestDTO;
-import com.lib_for_mentor.lib_for_mentor.model.request.CreateAuthorRequestDTO;
 import com.lib_for_mentor.lib_for_mentor.model.request.GenreRequestDTO;
-import com.lib_for_mentor.lib_for_mentor.model.response.AuthorResponseDTO;
-import com.lib_for_mentor.lib_for_mentor.model.response.GenreResponseDTO;
-import com.lib_for_mentor.lib_for_mentor.repository.GenreRepository;
+import org.common.common_utils.response.GenreResponseDTO;
 import com.lib_for_mentor.lib_for_mentor.service.GenreService;
-import com.lib_for_mentor.lib_for_mentor.service.impl.AuthorServiceImpl;
-import com.lib_for_mentor.lib_for_mentor.service.impl.GenreServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

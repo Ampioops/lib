@@ -1,6 +1,6 @@
 package com.lib_for_mentor.lib_for_mentor.controller;
 
-import com.lib_for_mentor.lib_for_mentor.model.response.BookResponseDTO;
+import org.common.common_utils.response.BookResponseDTO;
 import com.lib_for_mentor.lib_for_mentor.model.param.BookParamsDTO;
 import com.lib_for_mentor.lib_for_mentor.service.BookService;
 import com.lib_for_mentor.lib_for_mentor.service.impl.BookServiceImpl;
@@ -48,7 +48,7 @@ public class BookController {
     }
 
     @GetMapping(value = "/{bookId}", produces = APPLICATION_JSON_VALUE)
-    public BookResponseDTO getBookById(@PathVariable @NotNull Integer bookId) {
+    public BookResponseDTO getBookById(@PathVariable("bookId") @NotNull int bookId) {
         return bookService.findById(bookId);
     }
 

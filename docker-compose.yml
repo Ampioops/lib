@@ -18,6 +18,7 @@ services:
     networks:
       - library_network
   app:
+    image: lib-image
     build: .
     container_name: lib_container
     restart: always

@@ -26,6 +26,7 @@ spring:
     password: postgres_password
     parameters:
       user_name: postgres
+    drop-first: true
 
   kafka:
     bootstrap-servers: kafka:29092

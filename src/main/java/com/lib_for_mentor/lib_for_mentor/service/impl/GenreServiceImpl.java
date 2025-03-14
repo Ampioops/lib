@@ -5,7 +5,7 @@ import com.lib_for_mentor.lib_for_mentor.entity.Genre;
 import com.lib_for_mentor.lib_for_mentor.mapper.BookMapper;
 import com.lib_for_mentor.lib_for_mentor.mapper.GenreMapper;
 import com.lib_for_mentor.lib_for_mentor.model.request.GenreRequestDTO;
-import com.lib_for_mentor.lib_for_mentor.model.response.GenreResponseDTO;
+import org.common.common_utils.response.GenreResponseDTO;
 import com.lib_for_mentor.lib_for_mentor.repository.BookRepository;
 import com.lib_for_mentor.lib_for_mentor.repository.GenreRepository;
 import com.lib_for_mentor.lib_for_mentor.service.BookService;

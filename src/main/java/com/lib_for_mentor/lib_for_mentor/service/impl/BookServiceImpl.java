@@ -5,7 +5,7 @@ import com.lib_for_mentor.lib_for_mentor.mapper.BookMapper;
 import com.lib_for_mentor.lib_for_mentor.model.event.BookEvent;
 import com.lib_for_mentor.lib_for_mentor.model.param.BookParamsDTO;
 import com.lib_for_mentor.lib_for_mentor.model.request.BookRequestDTO;
-import com.lib_for_mentor.lib_for_mentor.model.response.BookResponseDTO;
+import org.common.common_utils.response.BookResponseDTO;
 import com.lib_for_mentor.lib_for_mentor.repository.AuthorRepository;
 import com.lib_for_mentor.lib_for_mentor.repository.BookRepository;
 import com.lib_for_mentor.lib_for_mentor.repository.GenreRepository;
@@ -83,6 +83,15 @@ public class BookServiceImpl implements BookService {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Book with id = [%s] not found".formatted(id)));
         bookRepository.delete(book);
+
+        BookEvent event = BookEvent.builder()
+                .eventType("DELETED")
+                .genreId(book.getGenre() != null ? book.getGenre().getId() : null)
+                .authorId(book.getAuthor() != null ? book.getAuthor().getId() : null)
+                .bookId(id)
+                .build();
+
+        kafkaTemplate.send("book-events", event);
     }
 
     @NotNull

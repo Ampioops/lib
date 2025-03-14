@@ -5,7 +5,7 @@ import com.lib_for_mentor.lib_for_mentor.entity.Publisher;
 import com.lib_for_mentor.lib_for_mentor.mapper.BookMapper;
 import com.lib_for_mentor.lib_for_mentor.mapper.PublisherMapper;
 import com.lib_for_mentor.lib_for_mentor.model.request.PublisherRequestDTO;
-import com.lib_for_mentor.lib_for_mentor.model.response.PublisherResponseDTO;
+import org.common.common_utils.response.PublisherResponseDTO;
 import com.lib_for_mentor.lib_for_mentor.repository.BookRepository;
 import com.lib_for_mentor.lib_for_mentor.repository.PublisherRepository;
 import com.lib_for_mentor.lib_for_mentor.service.BookService;

@@ -3,8 +3,8 @@ package com.lib_for_mentor.lib_for_mentor.mapper;
 import com.lib_for_mentor.lib_for_mentor.entity.Book;
 import com.lib_for_mentor.lib_for_mentor.entity.User;
 import com.lib_for_mentor.lib_for_mentor.model.request.BookRequestDTO;
-import com.lib_for_mentor.lib_for_mentor.model.response.BookResponseDTO;
-import com.lib_for_mentor.lib_for_mentor.model.response.UserResponseDTO;
+import org.common.common_utils.response.BookResponseDTO;
+import org.common.common_utils.response.UserResponseDTO;
 import org.mapstruct.*;
 
 import java.util.ArrayList;

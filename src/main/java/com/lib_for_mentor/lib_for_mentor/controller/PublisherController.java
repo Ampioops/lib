@@ -1,7 +1,7 @@
 package com.lib_for_mentor.lib_for_mentor.controller;
 
 import com.lib_for_mentor.lib_for_mentor.model.request.PublisherRequestDTO;
-import com.lib_for_mentor.lib_for_mentor.model.response.PublisherResponseDTO;
+import org.common.common_utils.response.PublisherResponseDTO;
 import com.lib_for_mentor.lib_for_mentor.service.PublisherService;
 import com.lib_for_mentor.lib_for_mentor.service.impl.PublisherServiceImpl;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;

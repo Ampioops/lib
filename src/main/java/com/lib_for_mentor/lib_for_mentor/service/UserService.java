@@ -3,8 +3,8 @@ package com.lib_for_mentor.lib_for_mentor.service;
 import com.lib_for_mentor.lib_for_mentor.client.dto.SubscriptionResponse;
 import com.lib_for_mentor.lib_for_mentor.model.param.UserParamsDTO;
 import com.lib_for_mentor.lib_for_mentor.model.request.UserRequestDTO;
-import com.lib_for_mentor.lib_for_mentor.model.response.BookResponseDTO;
-import com.lib_for_mentor.lib_for_mentor.model.response.UserResponseDTO;
+import org.common.common_utils.response.BookResponseDTO;
+import org.common.common_utils.response.UserResponseDTO;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 

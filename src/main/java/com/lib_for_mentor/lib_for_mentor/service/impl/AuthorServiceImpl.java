@@ -12,7 +12,7 @@ import com.lib_for_mentor.lib_for_mentor.mapper.BookMapper;
 import com.lib_for_mentor.lib_for_mentor.model.request.AuthorRequestDTO;
 import com.lib_for_mentor.lib_for_mentor.model.request.CreateAuthorRequestDTO;
 import com.lib_for_mentor.lib_for_mentor.model.param.AuthorParamsDTO;
-import com.lib_for_mentor.lib_for_mentor.model.response.AuthorResponseDTO;
+import org.common.common_utils.response.AuthorResponseDTO;
 import com.lib_for_mentor.lib_for_mentor.repository.AuthorRepository;
 import com.lib_for_mentor.lib_for_mentor.repository.BookRepository;
 import com.lib_for_mentor.lib_for_mentor.repository.GenreRepository;

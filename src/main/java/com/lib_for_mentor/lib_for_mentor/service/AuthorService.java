@@ -4,7 +4,7 @@ import com.lib_for_mentor.lib_for_mentor.entity.Author;
 import com.lib_for_mentor.lib_for_mentor.model.request.AuthorRequestDTO;
 import com.lib_for_mentor.lib_for_mentor.model.request.CreateAuthorRequestDTO;
 import com.lib_for_mentor.lib_for_mentor.model.param.AuthorParamsDTO;
-import com.lib_for_mentor.lib_for_mentor.model.response.AuthorResponseDTO;
+import org.common.common_utils.response.AuthorResponseDTO;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 

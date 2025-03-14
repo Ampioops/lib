@@ -3,7 +3,7 @@ package com.lib_for_mentor.lib_for_mentor.service;
 import com.lib_for_mentor.lib_for_mentor.entity.Book;
 import com.lib_for_mentor.lib_for_mentor.model.param.BookParamsDTO;
 import com.lib_for_mentor.lib_for_mentor.model.request.BookRequestDTO;
-import com.lib_for_mentor.lib_for_mentor.model.response.BookResponseDTO;
+import org.common.common_utils.response.BookResponseDTO;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 

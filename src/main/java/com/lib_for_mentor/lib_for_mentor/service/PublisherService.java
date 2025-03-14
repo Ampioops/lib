@@ -2,8 +2,8 @@ package com.lib_for_mentor.lib_for_mentor.service;
 
 import com.lib_for_mentor.lib_for_mentor.model.request.GenreRequestDTO;
 import com.lib_for_mentor.lib_for_mentor.model.request.PublisherRequestDTO;
-import com.lib_for_mentor.lib_for_mentor.model.response.GenreResponseDTO;
-import com.lib_for_mentor.lib_for_mentor.model.response.PublisherResponseDTO;
+import org.common.common_utils.response.GenreResponseDTO;
+import org.common.common_utils.response.PublisherResponseDTO;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 
