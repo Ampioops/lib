@@ -5,6 +5,7 @@ import com.lib_for_mentor.lib_for_mentor.mapper.BookMapper;
 import com.lib_for_mentor.lib_for_mentor.model.event.BookEvent;
 import com.lib_for_mentor.lib_for_mentor.model.param.BookParamsDTO;
 import com.lib_for_mentor.lib_for_mentor.model.request.BookRequestDTO;
+import com.lib_for_mentor.lib_for_mentor.service.kafka.BookEventKafkaProducer;
 import org.common.common_utils.response.BookResponseDTO;
 import com.lib_for_mentor.lib_for_mentor.repository.AuthorRepository;
 import com.lib_for_mentor.lib_for_mentor.repository.BookRepository;
@@ -31,7 +32,7 @@ public class BookServiceImpl implements BookService {
     private final BookMapper bookMapper;
     private final GenreRepository genreRepository;
     private final PublisherRepository publisherRepository;
-    private final KafkaTemplate<String, BookEvent> kafkaTemplate;
+    private final BookEventKafkaProducer bookEventKafkaProducer;
 
     @NotNull
     @Transactional
@@ -54,7 +55,7 @@ public class BookServiceImpl implements BookService {
                 .bookId(bookId)
                 .build();
 
-        kafkaTemplate.send("book-events", event);
+        bookEventKafkaProducer.sendBookEvent(event);
 
         return bookMapper.toBookResponse(book);
     }
@@ -91,7 +92,7 @@ public class BookServiceImpl implements BookService {
                 .bookId(id)
                 .build();
 
-        kafkaTemplate.send("book-events", event);
+        bookEventKafkaProducer.sendBookEvent(event);
     }
 
     @NotNull
