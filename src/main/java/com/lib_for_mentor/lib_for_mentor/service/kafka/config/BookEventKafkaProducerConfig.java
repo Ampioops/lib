@@ -1,8 +1,8 @@
-package com.lib_for_mentor.lib_for_mentor.config.producer;
+package com.lib_for_mentor.lib_for_mentor.service.kafka.config;
 
-import com.lib_for_mentor.lib_for_mentor.model.event.BookEvent;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.common.common_utils.event.BookEvent;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

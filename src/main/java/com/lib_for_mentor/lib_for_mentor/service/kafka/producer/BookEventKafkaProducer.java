@@ -1,6 +1,6 @@
-package com.lib_for_mentor.lib_for_mentor.service.kafka;
+package com.lib_for_mentor.lib_for_mentor.service.kafka.producer;
 
-import com.lib_for_mentor.lib_for_mentor.model.event.BookEvent;
+import org.common.common_utils.event.BookEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;

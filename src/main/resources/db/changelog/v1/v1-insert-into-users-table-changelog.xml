@@ -13,7 +13,7 @@
             <column name="id" value="1" />
             <column name="first_name" value="1UserFirstName"/>
             <column name="last_name" value="1UserLastName"/>
-            <column name="email" value="1UserEmail"/>
+            <column name="email" value="zchiernov1@gmail.com"/>
         </insert>
         <insert tableName="users">
             <column name="id" value="2" />

@@ -2,10 +2,11 @@ package com.lib_for_mentor.lib_for_mentor.service.impl;
 
 import com.lib_for_mentor.lib_for_mentor.entity.Book;
 import com.lib_for_mentor.lib_for_mentor.mapper.BookMapper;
-import com.lib_for_mentor.lib_for_mentor.model.event.BookEvent;
 import com.lib_for_mentor.lib_for_mentor.model.param.BookParamsDTO;
 import com.lib_for_mentor.lib_for_mentor.model.request.BookRequestDTO;
-import com.lib_for_mentor.lib_for_mentor.service.kafka.BookEventKafkaProducer;
+import com.lib_for_mentor.lib_for_mentor.service.kafka.producer.BookEventKafkaProducer;
+import org.common.common_utils.event.BookEvent;
+import org.common.common_utils.event.enums.BookEventType;
 import org.common.common_utils.response.BookResponseDTO;
 import com.lib_for_mentor.lib_for_mentor.repository.AuthorRepository;
 import com.lib_for_mentor.lib_for_mentor.repository.BookRepository;
@@ -18,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,7 +49,7 @@ public class BookServiceImpl implements BookService {
         Integer bookId =  bookRepository.save(book).getId();
 
         BookEvent event = BookEvent.builder()
-                .eventType("CREATED")
+                .eventType(BookEventType.CREATE)
                 .genreId(book.getGenre() != null ? book.getGenre().getId() : null)
                 .authorId(book.getAuthor() != null ? book.getAuthor().getId() : null)
                 .bookId(bookId)
@@ -86,7 +86,7 @@ public class BookServiceImpl implements BookService {
         bookRepository.delete(book);
 
         BookEvent event = BookEvent.builder()
-                .eventType("DELETED")
+                .eventType(BookEventType.DELETE)
                 .genreId(book.getGenre() != null ? book.getGenre().getId() : null)
                 .authorId(book.getAuthor() != null ? book.getAuthor().getId() : null)
                 .bookId(id)
