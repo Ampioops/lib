@@ -6,9 +6,9 @@ server:
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://db:5432/db-postgres
-    username: postgres
-    password: postgres_password
+    url: ${POSTGRES_DATASOURCE_URL}
+    username: ${POSTGRES_DATASOURCE_USERNAME}
+    password: ${POSTGRES_DATASOURCE_PASSWORD}
 
   jpa:
     hibernate:
@@ -20,16 +20,22 @@ spring:
 
   liquibase:
     enabled: true
-    change-log: classpath:db/changelog/main-changelog.xml
-    url: jdbc:postgresql://db:5432/db-postgres
-    user: postgres
-    password: postgres_password
+    change-log: ${LIQUIBASE_MAIN_CHANGELOG}
+    url: ${POSTGRES_DATASOURCE_URL}
+    user: ${POSTGRES_DATASOURCE_USERNAME}
+    password: ${POSTGRES_DATASOURCE_PASSWORD}
     parameters:
       user_name: postgres
     drop-first: true
 
   kafka:
-    bootstrap-servers: kafka:29092
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
 
   main:
     web-application-type: servlet
+
+feign:
+  client:
+    config:
+      subscription-service:
+        url: ${FEIGN_CLIENT_BASEURL}
